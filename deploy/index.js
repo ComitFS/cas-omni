@@ -45,21 +45,24 @@ var cas_omni_api = (function(api)
 	}
 	
 	async function handleCredentials(username, password) {
-		console.debug("handleCredentials", username, password);		
-		const url1 = location.protocol + "//" + location.host + "/teams/api/openlink/config/global";	
+		const host = location.protocol == "http:" ? "localhost:7070" : "localhost:7443"
+		const url1 = location.protocol + "//" + host + "/teams/api/openlink/config/global";	
 		
 		const response1 = await fetch(url1, {method: "GET"});
 		const config = await response1.json();			
 		console.info("handleCredentials config", config);
 			
-		const url2 = location.protocol + "//" + location.host + "/teams/api/openlink/config/properties";	
+		const url2 = location.protocol + "//" + host + "/teams/api/openlink/config/properties";	
 		const authorization = urlParam("t");
 		const response2 = await fetch(url2, {method: "GET", headers: {authorization}});
 		const property = await response2.json();	
 		console.log("User properties", property);	
 
 		const payload = {action: 'config', config, property};
-		chrome.runtime.sendMessage('ahmnkjfekoeoekkbgmpbgcanjiambfhc', JSON.stringify(payload));					
+		const data = JSON.stringify(payload);
+
+		console.debug("handleCredentials", username, password, data);			
+		chrome.runtime.sendMessage('ahmnkjfekoeoekkbgmpbgcanjiambfhc', data);					
 	}
 
     function loadJS(name) {
