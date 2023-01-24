@@ -18,7 +18,7 @@ var cas_omni_api = (function(api)
 		if (!username || !password) {
 			WebAuthnGoJS.CreateContext(JSON.stringify({RPDisplayName: "CAS Omni", RPID: window.location.hostname, RPOrigin: window.location.origin}), (err, val) => {
 				if (err) {
-					location.href = "/";
+					//location.href = "/";
 				}
 				navigator.credentials.get({password: true}).then(function(credential) {
 					console.debug("window.load credential", credential);	
@@ -111,7 +111,7 @@ var cas_omni_api = (function(api)
 		WebAuthnGoJS.BeginLogin(userStr, (err, data) => {
 			if (err) {
 				console.error("Login failed", err);				
-				location.href = "/";
+				//location.href = "/";
 			}
 
 			data = JSON.parse(data);
@@ -143,13 +143,13 @@ var cas_omni_api = (function(api)
 					console.debug("Login result", username, err, result);
 					
 					if (err) {
-						location.href = "/";
+						//location.href = "/";
 					}						
 					setCredentials(username, userStr);
 				});
 			}).catch((err) => {
 				console.error("Login failed", err);
-				location.href = "/";				
+				//location.href = "/";				
 			});
 	  });
 	}	
@@ -174,7 +174,7 @@ var cas_omni_api = (function(api)
 	function createUserCredentials(username, token) 
 	{
 		if (!username || username.trim() === "" || !token || token.trim() === "") {
-			location.href = "/";
+			//location.href = "/";
 		}
 		
 		const displayName = username;
@@ -210,7 +210,7 @@ var cas_omni_api = (function(api)
 		{
 			if (err) {
 				console.error("Registration failed", err);				
-				location.href = "/";
+				//location.href = "/";
 			}
 			
 			data = JSON.parse(data);
@@ -239,7 +239,7 @@ var cas_omni_api = (function(api)
 				{
 					if (err) {
 						console.error("Registration failed", err);				
-						location.href = "/";
+						//location.href = "/";
 					}
 					
 					const credential = JSON.parse(result);
@@ -251,7 +251,7 @@ var cas_omni_api = (function(api)
 				
 			}).catch((err) => {
 				console.error("Registration failed", err);
-				location.href = "/";				
+				//location.href = "/";				
 			});
 		})
 	}
