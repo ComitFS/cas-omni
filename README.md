@@ -1,2 +1,2 @@
-# cas-serve
-Static web pages for CAS Serve
+# CAS Omni Channels
+Static web pages for CAS Omni
