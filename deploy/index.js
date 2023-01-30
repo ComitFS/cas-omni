@@ -46,19 +46,25 @@ var cas_omni_api = (function(api)
 	
 	async function handleCredentials(username, password) {
 		const host = location.protocol == "http:" ? "localhost:7070" : "localhost:7443"
-		const url1 = location.protocol + "//" + host + "/teams/api/openlink/config/global";	
+		let url = location.protocol + "//" + host + "/teams/api/openlink/config/global";	
 		
-		const response1 = await fetch(url1, {method: "GET"});
-		const config = await response1.json();			
+		let response = await fetch(url, {method: "GET"});
+		const config = await response.json();			
 		console.info("handleCredentials config", config);
 			
-		const url2 = location.protocol + "//" + host + "/teams/api/openlink/config/properties";	
-		const authorization = urlParam("t");
-		const response2 = await fetch(url2, {method: "GET", headers: {authorization}});
-		const property = await response2.json();	
+		url = location.protocol + "//" + host + "/teams/api/openlink/config/properties";	
+		let authorization = urlParam("t");
+		response = await fetch(url, {method: "GET", headers: {authorization}});
+		const property = await response.json();	
 		console.log("User properties", property);	
+		
+		url = location.protocol + "//" + host + "/teams/api/openlink/profile";	
+		authorization = urlParam("t");
+		response = await fetch(url, {method: "GET", headers: {authorization}});
+		const profile = await response.json();	
+		console.log("User properties", profile);		
 
-		const payload = {action: 'config', config, property};
+		const payload = {action: 'config', config, property, profile};
 		const data = JSON.stringify(payload);
 
 		console.debug("handleCredentials", username, password, data);			
