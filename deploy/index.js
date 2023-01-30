@@ -1,4 +1,4 @@
-let loginModal;
+let loginModal, configData;
 	
 var cas_omni_api = (function(api)
 {
@@ -10,7 +10,18 @@ var cas_omni_api = (function(api)
     window.addEventListener("load", function()  {
 		console.debug("window.load", window.location.hostname, window.location.origin);
 
-		loadCSS('./tingle.min.css');			
+		loadCSS('./tingle.min.css');	
+
+		const configButton = document.querySelector("#configure");
+		
+		configButton.addEventListener('click', (event) => {	
+		
+			if (configData) {
+				chrome.runtime.sendMessage('ahmnkjfekoeoekkbgmpbgcanjiambfhc', configData);
+			} else {
+				alert("You are not authorizsed to do this");
+			}
+		});	
 		
 		const username = sessionStorage.getItem("cas.omni.user");
 		const password = sessionStorage.getItem("cas.omni.password");	
@@ -65,10 +76,9 @@ var cas_omni_api = (function(api)
 		console.log("User properties", profile);		
 
 		const payload = {action: 'config', config, property, profile};
-		const data = JSON.stringify(payload);
+		configData = JSON.stringify(payload);
 
-		console.debug("handleCredentials", username, password, data);			
-		chrome.runtime.sendMessage('ahmnkjfekoeoekkbgmpbgcanjiambfhc', data);					
+		console.debug("handleCredentials", username, password, configData);					
 	}
 
     function loadJS(name) {
