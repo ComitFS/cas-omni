@@ -11,17 +11,6 @@ var cas_omni_api = (function(api)
 		console.debug("window.load", window.location.hostname, window.location.origin);
 
 		loadCSS('./tingle.min.css');	
-
-		const configButton = document.querySelector("#configure");
-		
-		configButton.addEventListener('click', (event) => {	
-		
-			if (configData) {
-				chrome.runtime.sendMessage('ahmnkjfekoeoekkbgmpbgcanjiambfhc', configData);
-			} else {
-				alert("You are not authorizsed to do this");
-			}
-		});	
 		
 		const username = sessionStorage.getItem("cas.omni.user");
 		const password = sessionStorage.getItem("cas.omni.password");	
@@ -56,29 +45,31 @@ var cas_omni_api = (function(api)
 	}
 	
 	async function handleCredentials(username, password) {
-		const host = location.protocol == "http:" ? "localhost:7070" : "localhost:7443"
-		let url = location.protocol + "//" + host + "/teams/api/openlink/config/global";	
-		
-		let response = await fetch(url, {method: "GET"});
-		const config = await response.json();			
-		console.info("handleCredentials config", config);
+		let authorization = urlParam("t");		
+
+		if (authorization) {
+			const host = location.protocol == "http:" ? "localhost:7070" : "localhost:7443"
+			let url = location.protocol + "//" + host + "/teams/api/openlink/config/global";	
 			
-		url = location.protocol + "//" + host + "/teams/api/openlink/config/properties";	
-		let authorization = urlParam("t");
-		response = await fetch(url, {method: "GET", headers: {authorization}});
-		const property = await response.json();	
-		console.log("User properties", property);	
-		
-		url = location.protocol + "//" + host + "/teams/api/openlink/profile";	
-		authorization = urlParam("t");
-		response = await fetch(url, {method: "GET", headers: {authorization}});
-		const profile = await response.json();	
-		console.log("User properties", profile);		
+			let response = await fetch(url, {method: "GET"});
+			const config = await response.json();			
+			console.info("handleCredentials config", config);
+				
+			url = location.protocol + "//" + host + "/teams/api/openlink/config/properties";	
+			response = await fetch(url, {method: "GET", headers: {authorization}});
+			const property = await response.json();	
+			console.log("User properties", property);	
+			
+			url = location.protocol + "//" + host + "/teams/api/openlink/profile";	
+			response = await fetch(url, {method: "GET", headers: {authorization}});
+			const profile = await response.json();	
+			console.log("User properties", profile);		
 
-		const payload = {action: 'config', config, property, profile};
-		configData = JSON.stringify(payload);
+			const payload = {action: 'config', config, property, profile};
+			configData = JSON.stringify(payload);
 
-		console.debug("handleCredentials", username, password, configData);					
+			console.debug("handleCredentials", username, password, configData);		
+		}			
 	}
 
     function loadJS(name) {
@@ -357,10 +348,17 @@ var cas_omni_api = (function(api)
 
     //-------------------------------------------------------
     //
-    //  Startup
+    //  External
     //
     //-------------------------------------------------------
 	
+	api.configure = function() {
+		if (configData) {
+			chrome.runtime.sendMessage('ahmnkjfekoeoekkbgmpbgcanjiambfhc', configData);
+		} else {
+			alert("You are not authorizsed to do this");
+		}		
+	}
 
     return api;
 
