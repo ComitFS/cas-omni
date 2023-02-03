@@ -10,7 +10,7 @@ var cas_omni_api = (function(api)
     window.addEventListener("load", function()  {
 		console.debug("window.load", window.location.hostname, window.location.origin);
 
-		loadCSS('./tingle.min.css');	
+		loadCSS('./css/tingle.min.css');	
 		
 		const username = sessionStorage.getItem("cas.omni.user");
 		const password = sessionStorage.getItem("cas.omni.password");	
@@ -58,7 +58,7 @@ var cas_omni_api = (function(api)
 			url = location.protocol + "//" + host + "/teams/api/openlink/config/properties";	
 			response = await fetch(url, {method: "GET", headers: {authorization}});
 			const property = await response.json();	
-			console.log("User properties", property);		
+			console.log("User properties", property);			
 
 			const payload = {action: 'config', config, property};
 			configData = JSON.stringify(payload);
@@ -346,14 +346,7 @@ var cas_omni_api = (function(api)
     //  External
     //
     //-------------------------------------------------------
-	
-	api.configure = function() {
-		if (configData) {
-			chrome.runtime.sendMessage('ahmnkjfekoeoekkbgmpbgcanjiambfhc', configData);
-		} else {
-			alert("You are not authorizsed to do this");
-		}		
-	}
+
 
     return api;
 
