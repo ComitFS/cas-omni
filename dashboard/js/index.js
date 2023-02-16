@@ -1,13 +1,15 @@
-let loginModal, configData;
+let loginModal, customerData;
 	
 var cas_omni_api = (function(api)
 {
-    window.addEventListener("unload", function()
+	const nickColors = {};
+	
+    window.addEventListener("unload", () =>
     {
         console.debug("cas_omni_api addListener unload");
     });
 
-    window.addEventListener("load", function()  {
+    window.addEventListener("load", () =>  {
 		console.debug("window.load", window.location.hostname, window.location.origin);
 
 		loadCSS('./css/tingle.min.css');	
@@ -38,10 +40,123 @@ var cas_omni_api = (function(api)
 		}
     });
 
+	window.addEventListener('hashchange', () => {
+		processHashLocation();  
+	});
+	
+	function processHashLocation() {
+	  console.debug('processHashLocation', location.hash)
+	  
+	  if (location.hash.startsWith("#order-")) {
+		  handleOrder(location.hash.substring(7));
+	  }
+	  else
+		  
+	  if (location.hash.startsWith("#user-")) {
+		  handleUser(location.hash.substring(6));
+	  }			
+	}
+
 	function setCredentials(username, password) {
 		sessionStorage.setItem("cas.omni.user", username);
 		sessionStorage.setItem("cas.omni.password", password);			
 		location.reload();
+	}
+
+	function handleUser(userNo) {
+		const orderNo = location.hash.substring(7);
+		let userData;
+		
+		for (group of customerData.property.groups) 
+		{							
+			for (item of group.members) 
+			{
+				if (item.username == userNo) {
+					userData = item;
+					break;
+				}
+			}
+			if (userData) break;
+		}			
+		
+		if (userData) {
+			const headerLine = document.querySelector("#header-line");
+			headerLine.innerHTML = "User - " + userNo;
+			
+			const contentDiv = document.querySelector(".content .container-fluid .row");	
+			contentDiv.innerHTML = "";
+			
+			console.debug('handleUser', userNo)	
+
+			newElement(contentDiv, "div", null, "container-fluid", `
+			  <div class="row g-4">
+				<!-- Start column -->
+				<div class="col-md-6">
+				  <!-- general form elements -->
+				  <input id="userToken" type="hidden" value="${userData['ms_teams_access_token']}" />
+				  <input id="userName" type="hidden" value="${userNo}" />				  
+				  <div class="card card-primary card-outline">
+					<div class="card-header">
+					  <div class="card-title">User Profile</div>
+					</div>
+					  <div class="card-body">
+						<div class="mb-3">
+						  <label for="inputName" class="form-label">Full Name</label>
+						  <input type="text" class="form-control" id="inputName" value="${userData.name}">
+						  <div id="nameHelp" class="form-text">This information is stored encrypted</div>					  
+						</div>				  
+						<div class="mb-3">
+						  <label for="inputEmail" class="form-label">Email address</label>
+						  <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" value="${userData.email}">
+						  <div id="emailHelp" class="form-text">This information is stored encrypted.</div>
+						</div>
+					  </div>
+					  <div class="card-footer">
+						<button onclick="cas_omni_api.updateUser()" class="btn btn-primary">Update Profile</button>
+						<button onclick="cas_omni_api.dispatchToUser()" class="btn btn-secondary">Dispatch To User</button>					
+					  </div>
+				  </div>
+				</div>
+			  </div>
+			`)	
+		}			
+	}
+	
+	function handleOrder(orderNo) {		
+		const contentDiv = document.querySelector(".content .container-fluid .row");	
+		contentDiv.innerHTML = "";
+		
+		console.debug('handleOrder', orderNo)		
+		
+		for (group of customerData.property.groups) 
+		{
+			if (orderNo == group["cas-serve.order.number"]) {			
+				console.debug('handleOrder - order', group, contentDiv);
+
+				const headerLine = document.querySelector("#header-line");
+				headerLine.innerHTML = "Order - #" + orderNo + " for " +  group.members.length + " users";				
+				
+				for (item of group.members) {
+			
+					newElement(contentDiv, "div", null, "col-lg-3 col-6", `
+					  <div class="small-box text-bg-primary">
+						<div class="inner">
+						  <h5>${item.username}</h5>
+						  <p>${item.profile.interests.length} CAS Interests</p>
+						  <p>${item.name}</p>						  
+						</div>
+						<div class="icon">
+						  <i class="inner-icon ion ion-bag"></i>
+						</div>
+						<a href="#user-${item.username}" class="small-box-footer">More info <i class="fa-solid fa-arrow-circle-right"></i>
+						</a>
+					  </div>		
+					`)	
+				}
+				break;
+			}
+
+		}			
 	}
 	
 	async function handleCredentials(username, password) {
@@ -58,12 +173,11 @@ var cas_omni_api = (function(api)
 			url = location.protocol + "//" + host + "/teams/api/openlink/config/properties";	
 			response = await fetch(url, {method: "GET", headers: {authorization}});
 			const property = await response.json();	
-			console.log("User properties", property);			
+			console.debug("User properties", property);			
 
-			const payload = {action: 'config', config, property};
-			configData = JSON.stringify(payload);
-
-			console.debug("handleCredentials", username, password, configData);		
+			customerData = {username, password, action: 'config', config, property};
+			console.debug("handleCredentials", customerData);			
+			setupUI();		
 		}			
 	}
 
@@ -272,7 +386,7 @@ var cas_omni_api = (function(api)
 			if (credential) {
 				navigator.credentials.store(credential).then(function()
 				{
-					console.log("registerCredential - storeCredentials stored");				
+					console.debug("registerCredential - storeCredentials stored");				
 					setCredentials(id, pass);				
 
 				}).catch(function (err) {
@@ -341,6 +455,120 @@ var cas_omni_api = (function(api)
         loginModal.open();
     }	
 
+	function newElement(parent, el, id, classNames, html) {
+		const ele = document.createElement(el);
+		if (id) ele.id = id;
+		if (html) ele.innerHTML = html;
+
+		if (classNames)	{
+			for (className of classNames.split(" ")) {
+				ele.classList.add(className);
+			}
+		}
+		parent.appendChild(ele);
+		return ele;
+	}
+	
+	function setupUI() {
+		const userName = document.querySelector("#user-name");
+		userName.innerHTML = customerData.property.name;
+		
+		const userAvatar = document.querySelector("#user-avatar");
+		userAvatar.src = createAvatar(customerData.property.name);
+		
+		const orderMenu = document.querySelector("aside.main-sidebar div.sidebar ul.nav-sidebar ul.nav.nav-treeview");		
+		console.debug("setupUI", orderMenu);
+		
+		for (group of customerData.property.groups) {
+			const orderName = group["cas-serve.order.number"];
+			console.debug("setupUI menu", orderName);
+		
+			newElement(orderMenu, "li", null, "nav-item", `
+                  <a href="#order-${orderName}" class="nav-link active">
+                    <i class="nav-icon fa-regular fa-circle"></i>
+                    <p>${orderName}</p>
+                  </a>			
+			`)
+		}
+		
+		processHashLocation();  				
+	}
+	
+	function createAvatar(nickname, width, height, font) {
+		console.debug("createAvatar", nickname);	
+
+		if (!nickname) nickname = "Unknown";
+		nickname = nickname.toLowerCase();
+
+		if (!width) width = 128;
+		if (!height) height = 128;
+		if (!font) font = "64px Arial";
+
+		var canvas = document.createElement('canvas');
+		canvas.style.display = 'none';
+		canvas.width = width;
+		canvas.height = height;
+		document.body.appendChild(canvas);
+		var context = canvas.getContext('2d');
+		context.fillStyle = getRandomColor(nickname);
+		context.fillRect(0, 0, canvas.width, canvas.height);
+		context.font = font;
+		context.fillStyle = "#fff";
+		context.textAlign = "center";		
+
+		var first, last, pos = nickname.indexOf("@");
+		if (pos > 0) nickname = nickname.substring(0, pos);
+
+		// try to split nickname into words at different symbols with preference
+		let words = nickname.split(/[, ]/); // "John W. Doe" -> "John "W." "Doe"  or  "Doe,John W." -> "Doe" "John" "W."
+		if (words.length == 1) words = nickname.split("."); // "John.Doe" -> "John" "Doe"  or  "John.W.Doe" -> "John" "W" "Doe"
+		if (words.length == 1) words = nickname.split("-"); // "John-Doe" -> "John" "Doe"  or  "John-W-Doe" -> "John" "W" "Doe"
+
+		if (words && words[0] && words.first != '') {
+			const firstInitial = words[0][0]; // first letter of first word
+			var lastInitial = null; // first letter of last word, if any
+
+			const lastWordIdx = words.length - 1; // index of last word
+			
+			if (lastWordIdx > 0 && words[lastWordIdx] && words[lastWordIdx] != '') {
+				lastInitial = words[lastWordIdx][0]; // first letter of last word
+			}
+
+			// if nickname consist of more than one words, compose the initials as two letter
+			var initials = firstInitial;
+			
+			if (lastInitial) {
+				// if any comma is in the nickname, treat it to have the lastname in front, i.e. compose reversed
+				initials = nickname.indexOf(",") == -1 ? firstInitial + lastInitial : lastInitial + firstInitial;
+			}
+
+			const metrics = context.measureText(initials.toUpperCase());
+			context.fillText(initials.toUpperCase(), width / 2, (height - metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2 + metrics.actualBoundingBoxAscent);
+
+			var data = canvas.toDataURL();
+			document.body.removeChild(canvas);
+		}
+
+		return canvas.toDataURL();
+	}	
+	
+	function getRandomColor(nickname) {
+		if (nickColors[nickname])
+		{
+			return nickColors[nickname];
+		}
+		else {
+			var letters = '0123456789ABCDEF';
+			var color = '#';
+
+			for (var i = 0; i < 6; i++) {
+				color += letters[Math.floor(Math.random() * 16)];
+			}
+			nickColors[nickname] = color;
+			return color;
+		}
+	}		
+
     //-------------------------------------------------------
     //
     //  External
@@ -348,6 +576,44 @@ var cas_omni_api = (function(api)
     //-------------------------------------------------------
 
 
+	api.updateUser = async () => {
+		const inputEmail = document.querySelector("#inputEmail").value;
+		const inputName = document.querySelector("#inputName").value;
+		const authorization = document.querySelector("#userToken").value;		
+		const host = urlParam("s");
+		console.debug('updateUser', inputEmail, inputName, authorization, host);
+		
+		if (authorization && host && userToken && inputEmail && inputName) {
+			const url = location.protocol + "//" + host + "/teams/api/openlink/config/properties";	
+			const body = JSON.stringify([
+				{name: "name", value: inputName},
+				{name: "email", value: inputEmail}				
+			]);			
+			const response = await fetch(url, {method: "POST", headers: {authorization}, body});
+			console.debug("updateUser - response", response);
+			location.reload();
+		} else {
+			alert("Bad data");
+		}			
+	}
+	
+	api.dispatchToUser = async () => {
+		const inputEmail = document.querySelector("#inputEmail").value;		
+		const userName = document.querySelector("#userName").value;	
+		const authorization = document.querySelector("#userToken").value;		
+		const host = urlParam("s");
+		console.debug('dispatchToUser', userName, authorization, host);	
+
+		if (authorization && host && userToken && inputEmail && inputName) {
+			const url = location.protocol + "//" + host + "/teams/api/openlink/omni/sendmail";			
+			const response = await fetch(url, {method: "POST", headers: {authorization}});
+			console.debug("dispatchToUser - response", response);
+			alert("Email sent to " + inputEmail);
+		} else {
+			alert("Bad data");
+		}		
+	}	
+		
     return api;
 
 }(cas_omni_api || {}));
