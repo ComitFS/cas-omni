@@ -349,7 +349,8 @@ var cas_omni_api = (function(api)
 	
 	api.configure = function() {
 		if (configData) {
-			chrome.runtime.sendMessage('ahmnkjfekoeoekkbgmpbgcanjiambfhc', configData);
+			chrome.runtime.sendMessage('ifohdfipnpbkalbeaefgecjkmfckchkd', configData);		// dev	
+			chrome.runtime.sendMessage('ahmnkjfekoeoekkbgmpbgcanjiambfhc', configData);		// prod
 		} else {
 			alert("You are not authorizsed to do this");
 		}		
