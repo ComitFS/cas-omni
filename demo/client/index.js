@@ -1,5 +1,4 @@
-window.addEventListener("load", async function()
-{
+window.addEventListener("load", async function(){
 	const urlParam = (name) => {
 		var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
 		if (!results) { return undefined; }
