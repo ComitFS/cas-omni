@@ -19,9 +19,10 @@ window.addEventListener("load", async function()
 	const response2 = await client.getToken(userId, ["chat", "voip"]);		
 	const token = response2.token;	
 	
-	const resp1 = await fetch("/teams/api/openlink/sharedline/cas-omni-jjgartland", {method: "GET", headers: {authorization: "1234567890"}});	
+	const resp1 = await fetch("/teams/api/openlink/shared/meeting/cas-omni-jjgartland", {method: "GET", headers: {authorization: "1234567890"}});	
 	const line = await resp1.json();	
 	const locator = {meetingLink: line.joinWebUrl};	
+	const callAdapter = await callComposite.loadCallComposite({displayName: "JJ Gartland", locator,	userId,	token}, content, {formFactor: 'mobile',	key: new Date()	});	
 		
 	button.addEventListener('click', async function() 	{	
 		console.debug("click", open);
@@ -31,7 +32,6 @@ window.addEventListener("load", async function()
 			content.style.display = 'block';
 			button.innerHTML = 'X';
 			
-			const callAdapter = await callComposite.loadCallComposite({displayName: "JJ Gartland", locator,	userId,	token}, content, {formFactor: 'mobile',	key: new Date()	});
 			const currentCall = await callAdapter.startCall([destination]);	
 			
 		} else if (open) {
@@ -40,4 +40,8 @@ window.addEventListener("load", async function()
 			button.innerHTML = buttonIcon;
 		}
 	});
+	
+    window.onbeforeunload = () => {
+      callAdapter.dispose();
+    };	
 });
