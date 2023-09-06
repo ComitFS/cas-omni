@@ -11,7 +11,7 @@ window.addEventListener("load", async function(){
 	const buttonIcon = button.innerHTML;
 	
 	const destination = { microsoftTeamsUserId: '83ec482c-3bc5-4116-acee-e081cc720630'};
-	const userId = { communicationUserId: '8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000001a-e206-aa5f-0cf9-9c3a0d002bf8' };
+	const userId = { communicationUserId: '8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000d-ce88-0aa9-0cf9-9c3a0d004831' };
 
 	const url = urlParam("u") ? urlParam("u") : "";
 	let casUrl = url + "/teams/api/openlink/config/global";	
