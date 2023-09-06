@@ -24,9 +24,10 @@ window.addEventListener("load", async function(){
 	
 	const authorization = urlParam("t") ? urlParam("t") : "1234567890";
 
-	const resp1 = await fetch(url + "/teams/api/openlink/shared/meeting/cas-omni-jjgartland", {method: "GET", headers: {authorization}});	
-	const line = await resp1.json();	
-	const locator = {meetingLink: line.joinWebUrl};	
+	//const resp1 = await fetch(url + "/teams/api/openlink/shared/meeting/cas-omni-jjgartland", {method: "GET", headers: {authorization}});	
+	//const line = await resp1.json();	
+	const locator = {meetingLink: "https://teams.microsoft.com/l/meetup-join/19%3ameeting_OTY1NmJlMTQtOWJlOC00NDM3LWI5YjEtOWRkM2U4MDVlNjBl%40thread.v2/0?context=%7b%22Tid%22%3a%22a83ec96f-82b0-456e-90a2-a6ba1ce7fc4e%22%2c%22Oid%22%3a%2283ec482c-3bc5-4116-acee-e081cc720630%22%7d"};
+	//const locator = {meetingLink: line.joinWebUrl};	
 	const callAdapter = await callComposite.loadCallComposite({displayName: "JJ Gartland", locator,	userId,	token}, content, {formFactor: 'mobile',	key: new Date()	});	
 		
 	button.addEventListener('click', async function() 	{	
@@ -37,7 +38,9 @@ window.addEventListener("load", async function(){
 			content.style.display = 'block';
 			button.innerHTML = 'X';
 			
-			const currentCall = await callAdapter.startCall([destination]);	
+			//const currentCall = await callAdapter.startCall([destination]);
+			const currentCall = await callAdapter.joinCall();			
+			currentCall.addParticipant(destination, {});			
 			
 		} else if (open) {
 			open = !open;
