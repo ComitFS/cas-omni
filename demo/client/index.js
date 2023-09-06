@@ -22,7 +22,7 @@ window.addEventListener("load", async function(){
 	const response2 = await client.getToken(userId, ["chat", "voip"]);		
 	const token = response2.token;	
 	
-	const locator = {meetingLink: "https://teams.microsoft.com/l/meetup-join/19%3ameeting_OTY1NmJlMTQtOWJlOC00NDM3LWI5YjEtOWRkM2U4MDVlNjBl%40thread.v2/0?context=%7b%22Tid%22%3a%22a83ec96f-82b0-456e-90a2-a6ba1ce7fc4e%22%2c%22Oid%22%3a%2283ec482c-3bc5-4116-acee-e081cc720630%22%7d"};
+	const locator = {meetingLink: ""};
 	const callAdapter = await callComposite.loadCallComposite({displayName: "JJ Gartland", locator,	userId,	token}, content, {formFactor: 'desktop',	key: new Date()	});	
 		
 	button.addEventListener('click', async function() 	{	
