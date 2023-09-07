@@ -22,7 +22,7 @@ window.addEventListener("load", async function(){
 	const response2 = await client.getToken(userId, ["chat", "voip"]);		
 	const token = response2.token;	
 	
-	const locator = {meetingLink: ""};
+	const locator = {group: '83ec482c-3bc5-4116-acee-e081cc720630'};
 	const callAdapter = await callComposite.loadCallComposite({displayName: "JJ Gartland", locator,	userId,	token}, content, {formFactor: 'desktop',	key: new Date()	});	
 		
 	button.addEventListener('click', async function() 	{	
