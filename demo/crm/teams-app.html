@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CRM App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link id="favicon" rel="shortcut icon" href="./comitfs-32.png" type="image/png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>	
+    <script src='ms-teams.min.js'></script> 		
+    <script src='teams-app.js'></script> 		
+</head>
+<style>
+  .call-history-make-call-icon, .call-history-call-direct-icon {
+	cursor: pointer;
+  }
+  .wm-block {
+   margin: 20px auto; }
+  .wm-block .text-right {
+    text-align: right; }
+  .wm-block .scroll-style::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(85, 85, 85, 0.3);
+    background-color: #F5F5F5; }
+  .wm-block .cursor {
+    cursor: pointer; }
+  .wm-block .scroll-style::-webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5; }
+  .wm-block .scroll-style::-webkit-scrollbar-thumb {
+    background-color: #707070;
+    border: 2px solid #cccccc; }
+  .wm-block .wm-main-sec {
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 1px 4px 7px #ddd;
+    padding: 0px; }
+    .wm-block .wm-main-sec .tab-content {
+      padding: 10px; }
+    .wm-block .wm-main-sec .sub-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      margin-top: 10px; }
+    .wm-block .wm-main-sec .title-btn {
+      padding: 2px;
+      font-size: 12px; }
+      .wm-block .wm-main-sec .title-btn .icon {
+        margin-right: 5px; }
+    .wm-block .wm-main-sec .left-panel {
+      background-color: #ffb100;
+      color: #fff;
+      padding: 10px; }
+      .wm-block .wm-main-sec .left-panel .nav-link svg {
+        color: #fff; }
+      .wm-block .wm-main-sec .left-panel .nav-link .notification-count {
+        position: absolute;
+        padding: 0px 3px;
+        --bs-bg-opacity: 1;
+        background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+        color: #fff;
+        border-radius: 50% !important;
+        border-color: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+        top: 0;
+        font-size: 10px;
+        min-height: 14px;
+        min-width: 14px; }
+    .wm-block .wm-main-sec .user-info {
+      font-weight: bold; }
+      .wm-block .wm-main-sec .user-info .icon {
+        margin-right: 5px; }
+    .wm-block .wm-main-sec .actions {
+      margin: 10px 0px; }
+      .wm-block .wm-main-sec .actions .action-icon {
+        cursor: pointer;
+        padding: 5px;
+        background-color: #000;
+        margin-right: 5px;
+        width: 30px;
+        text-align: center; }
+        .wm-block .wm-main-sec .actions .action-icon svg {
+          color: #fff; }
+        .wm-block .wm-main-sec .actions .action-icon:hover {
+          transform: scale(1);
+          background: #ff800a;
+          z-index: 2;
+          box-shadow: 1px 1px 1px 1px #c9c9c9; }
+    .wm-block .wm-main-sec .activity-btns .badge {
+      margin-right: 5px; }
+    .wm-block .wm-main-sec .participants-list {
+      list-style: none;
+      padding: 0px; }
+      .wm-block .wm-main-sec .participants-list .icon {
+        margin-right: 5px; }
+    .wm-block .wm-main-sec .activity-sec .activity-check {
+      padding-bottom: 0px;
+      margin-left: 5px;
+      min-height: 1rem; }
+    .wm-block .wm-main-sec .latest-main-interaction-sec .sub-title {
+      background-color: #d0d0ce;
+      padding: 10px;
+      margin: 0px;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px; }
+    .wm-block .wm-main-sec .latest-main-interaction-sec .latest-interaction-sec {
+      padding: 10px;
+      border: 1px solid #d0d0ce;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px; }
+      .wm-block .wm-main-sec .latest-main-interaction-sec .latest-interaction-sec .interaction-main-sec {
+        overflow-y: auto;
+        max-height: 340px;
+        overflow-x: hidden;
+        min-height: 493px; }
+        .wm-block .wm-main-sec .latest-main-interaction-sec .latest-interaction-sec .interaction-main-sec .interaction-sec {
+          border-bottom: 1px solid #e9e9e9;
+          padding-bottom: 10px;
+          margin-bottom: 10px; }
+          .wm-block .wm-main-sec .latest-main-interaction-sec .latest-interaction-sec .interaction-main-sec .interaction-sec:last-child {
+            border: 0px;
+            margin: 0px;
+            padding: 0px; }
+      .wm-block .wm-main-sec .latest-main-interaction-sec .latest-interaction-sec .caller-icon {
+        font-size: 29px;
+        color: #696969; }
+      .wm-block .wm-main-sec .latest-main-interaction-sec .latest-interaction-sec .caller-time {
+        font-size: 12px; }
+  .wm-block .call-hostory-info .call-info-icon svg {
+    font-size: 40px; }
+  .wm-block .history-sec .call-history-data {
+    overflow-y: auto;
+    max-height: 340px;
+    overflow-x: hidden;
+    min-height: 493px;
+    padding: 0px; }
+    .wm-block .history-sec .call-history-data .accordion-button {
+      padding: 1rem 2rem 1rem 1rem; }
+  .wm-block .history-sec .icon {
+    margin-right: 5px; }
+  .wm-block .history-sec .call-status svg {
+    font-size: 40px; }
+  .wm-block .history-indetail-sec {
+    border-left: 1px solid #d0d0ce; }
+    .wm-block .history-indetail-sec .logg-notification {
+      font-size: 12px; }
+
+/*# sourceMappingURL=style.css.map */
+
+</style>
+
+
+<body>
+	<h1><center>CAS Workflow Demo - Financial Adviser</center></h1>
+    <div class="container container-md wm-block">
+        <div class="row">
+            <div class="wm-main-sec  d-flex align-items-stretch">
+                <div class="col-auto left-panel d-flex align-items-start flex-column ">
+                    <div class="nav mb-auto flex-column nav-pills   d-flex align-items-start " id="v-pills-tab"
+                        role="tablist" aria-orientation="vertical">
+                        <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home"
+                            aria-selected="false"><i class="far fa-clock"></i></button>
+                        <button class="nav-link" id="v-pills-address-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-address" type="button" role="tab" aria-controls="v-pills-address"
+                            aria-selected="false"><i class="far fa-address-book"></i></button>
+                        <button class="nav-link" id="v-pills-search-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-search" type="button" role="tab" aria-controls="v-pills-search"
+                            aria-selected="false"><i class="fa fa-search"></i></button>
+                        <button class="nav-link  position-relative" id="v-pills-brain-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-brain" type="button" role="tab" aria-controls="v-pills-brain"
+                            aria-selected="false"><i class="fa fa-brain"></i><span class="notification-count">
+                                99
+                            </span></button>
+                        <button class="nav-link" id="v-pills-anysearch-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-anysearch" type="button" role="tab"
+                            aria-controls="v-pills-anysearch" aria-selected="false"><i
+                                class="fa fa-search-plus"></i></button>
+                        <button class="nav-link position-relative" id="v-pills-notification-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-notification" type="button" role="tab"
+                            aria-controls="v-pills-notification" aria-selected="false"><i class="fa fa-star"></i><span
+                                class="position-absolute  start-80 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                <span class="visually-hidden">New alerts</span>
+                            </span></button>
+                    </div>
+                    <div class="nav flex-column nav-pills   d-flex align-items-end " role="tablist"
+                        aria-orientation="vertical">
+                        <button class="nav-link  " id="v-pills-more-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-more" type="button" role="tab" aria-controls="v-pills-more"
+                            aria-selected="true"><i class="fa fa-sliders-h"></i></button>
+                        <button class="nav-link" id="v-pills-help-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-help" type="button" role="tab" aria-controls="v-pills-help"
+                            aria-selected="false"><i class="far fa-question-circle"></i></button>
+                        <button class="nav-link" id="v-pills-helpsearch-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-helpsearch" type="button" role="tab"
+                            aria-controls="v-pills-helpsearch" aria-selected="false"><i
+                                class="fa fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="col align-items-start">
+                    <div class="tab-content " id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                            aria-labelledby="v-pills-home-tab">
+
+                            <div class="row">
+                                <div class="history-sec col-md-7">
+                                    <div class="sub-title ">
+                                        <div class=" d-flex align-items-center justify-content-start">
+                                            Call History
+                                        </div>
+
+                                    </div>
+                                    <div class="history-search  d-flex justify-content-around">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Search"
+                                                aria-label="Search" aria-describedby="Search">
+                                            <button class="btn btn-outline-secondary" type="button" id="Search"><i
+                                                    class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <button class="nav-link active" id="nav-all-tab" data-bs-toggle="tab"
+                                                data-bs-target="#nav-all" type="button" role="tab"
+                                                aria-controls="nav-all" aria-selected="true">All</button>
+                                            <button class="nav-link" id="nav-missed-tab" data-bs-toggle="tab"
+                                                data-bs-target="#nav-missed" type="button" role="tab"
+                                                aria-controls="nav-missed" aria-selected="false">Missed</button>
+                                            <button class="nav-link" id="nav-external-tab" data-bs-toggle="tab"
+                                                data-bs-target="#nav-external" type="button" role="tab"
+                                                aria-controls="nav-external" aria-selected="false">External</button>
+                                            <button class="nav-link" id="nav-logged-tab" data-bs-toggle="tab"
+                                                data-bs-target="#nav-logged" type="button" role="tab"
+                                                aria-controls="nav-logged" aria-selected="false">Not Logged </button>
+                                            <button class="nav-link" id="nav-missing-tab" data-bs-toggle="tab"
+                                                data-bs-target="#nav-missing" type="button" role="tab"
+                                                aria-controls="nav-missing" aria-selected="false">Missing
+                                                Ticker</button>
+
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content call-history-data scroll-style" id="nav-tabContent">
+                                        <div class="tab-pane fade show active" id="nav-all" role="tabpanel"
+                                            aria-labelledby="nav-home-tab">
+                                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="flush-headingOneA">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#flush-collapseOneA" aria-expanded="false"
+                                                            aria-controls="flush-collapseOneA">
+                                                            <div class="col-md-8 date"><i
+                                                                    class="fa fa-calendar-alt icon"></i>Today 05 Feb
+                                                                2021 </div>
+                                                            <div class="col-md-4 no-of-calls"><i
+                                                                    class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="flush-collapseOneA" class="accordion-collapse collapse"
+                                                        aria-labelledby="flush-headingOneA"
+                                                        data-bs-parent="#accordionFlushExample">
+                                                        <div class="accordion-body row">
+                                                            <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                            </div>
+                                                            <div title="+441634251467" class="col row align-items-start">
+                                                                <div class="col-md-2 call-status text-center"><i
+                                                                        class="fa fa-reply"></i></div>
+                                                                <div class="col-md-7 ">
+                                                                    <div title="Call Directly" class="call-history-call-direct-icon"><b data-id2="8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000e-ee2c-3718-1252-573a0d00912a" data-id="8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000d-ce88-0aa9-0cf9-9c3a0d004831">JJ Gartland</b></div>
+                                                                    <div title="Call via PSTN" class="call-history-make-call-icon">+441634251467</div>
+                                                                </div>
+                                                                <div class="col-md-3 ">
+                                                                    <div>4:52 PM</div>
+                                                                    <div>00:00:00</div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>											
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="flush-headingOneB">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#flush-collapseOneB" aria-expanded="false"
+                                                            aria-controls="flush-collapseOneB">
+                                                            <div class="col-md-8 date"><i
+                                                                    class="fa fa-calendar-alt icon"></i>Today 05 Feb
+                                                                2021 </div>
+                                                            <div class="col-md-4 no-of-calls"><i
+                                                                    class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="flush-collapseOneB" class="accordion-collapse collapse"
+                                                        aria-labelledby="flush-headingOneB"
+                                                        data-bs-parent="#accordionFlushExample">
+                                                        <div class="accordion-body row">
+                                                            <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                            </div>
+                                                            <div title="+447711045853" class="col row align-items-start">
+                                                                <div class="col-md-2 call-status text-center"><i
+                                                                        class="fa fa-reply"></i></div>
+                                                                <div class="col-md-7 ">
+                                                                    <div title="Call Directly" class="call-history-call-direct-icon"><b data-id2="8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000e-ee2c-3718-1252-573a0d00912a" data-id="8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000d-ce88-0aa9-0cf9-9c3a0d004831">JJ Gartland</b></div>
+                                                                    <div title="Call via PSTN" class="call-history-make-call-icon">+447711045853</div>
+                                                                </div>
+                                                                <div class="col-md-3 ">
+                                                                    <div>4:52 PM</div>
+                                                                    <div>00:00:00</div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>	
+                                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="flush-headingOneC">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#flush-collapseOneC" aria-expanded="false"
+                                                            aria-controls="flush-collapseOneC">
+                                                            <div class="col-md-8 date"><i
+                                                                    class="fa fa-calendar-alt icon"></i>Today 05 Feb
+                                                                2021 </div>
+                                                            <div class="col-md-4 no-of-calls"><i
+                                                                    class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="flush-collapseOneC" class="accordion-collapse collapse"
+                                                        aria-labelledby="flush-headingOneC"
+                                                        data-bs-parent="#accordionFlushExample">
+                                                        <div class="accordion-body row">
+                                                            <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                            </div>
+                                                            <div title="+447793857322" class="col row align-items-start">
+                                                                <div class="col-md-2 call-status text-center"><i
+                                                                        class="fa fa-reply"></i></div>
+                                                                <div class="col-md-7 ">
+                                                                    <div title="Call Directly" class="call-history-call-direct-icon"><b data-id2="8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000e-ee2c-3718-1252-573a0d00912a" data-id="8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000d-ce88-0aa9-0cf9-9c3a0d004831">JJ Gartland</b></div>
+                                                                    <div title="Call via PSTN" class="call-history-make-call-icon">+447793857322</div>
+                                                                </div>
+                                                                <div class="col-md-3 ">
+                                                                    <div>4:52 PM</div>
+                                                                    <div>00:00:00</div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>											
+                                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="flush-headingOneD">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#flush-collapseOneD" aria-expanded="false"
+                                                            aria-controls="flush-collapseOneD">
+                                                            <div class="col-md-8 date"><i
+                                                                    class="fa fa-calendar-alt icon"></i>Today 05 Feb
+                                                                2021 </div>
+                                                            <div class="col-md-4 no-of-calls"><i
+                                                                    class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="flush-collapseOneD" class="accordion-collapse collapse"
+                                                        aria-labelledby="flush-headingOneD"
+                                                        data-bs-parent="#accordionFlushExample">
+                                                        <div class="accordion-body row">
+                                                            <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                            </div>
+                                                            <div title="+447825589457" class="col row align-items-start">
+                                                                <div class="col-md-2 call-status text-center"><i
+                                                                        class="fa fa-reply"></i></div>
+                                                                <div class="col-md-7 ">
+                                                                    <div title="Call Directly" class="call-history-call-direct-icon"><b data-id2="8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000e-ee2c-3718-1252-573a0d00912a" data-id="8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000d-ce88-0aa9-0cf9-9c3a0d004831">JJ Gartland</b></div>
+                                                                    <div title="Call via PSTN" class="call-history-make-call-icon">+447825589457</div>
+                                                                </div>
+                                                                <div class="col-md-3 ">
+                                                                    <div>4:52 PM</div>
+                                                                    <div>00:00:00</div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion accordion-flush">
+                                                <h2 class="accordion-header" id="flush-headingTwo">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
+                                                        aria-expanded="false" aria-controls="flush-collapseTwo">
+                                                        <div class="col-md-8 date"><i
+                                                                class="fa fa-calendar-alt icon"></i>Today 05 Feb 2021
+                                                        </div>
+                                                        <div class="col-md-4 no-of-calls"><i
+                                                                class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                    </button>
+                                                </h2>
+                                                <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingTwo"
+                                                    data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body row">
+                                                        <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="col row align-items-start">
+                                                            <div class="col-md-2 call-status text-center"><i
+                                                                    class="fa fa-share"></i></div>
+                                                            <div class="col-md-7 ">
+                                                                <div><b>Jappy Takhar</b></div>
+                                                                <div class="call-history-make-call-icon">+447711045853</div>																
+                                                                <div><span class="icon"> <i
+                                                                            class="fa fa-exclamation-triangle text-warning"></i></span>No
+                                                                    Research Access
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <div>4:52 PM</div>
+                                                                <div>00:00:00</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion accordion-flush">
+                                                <h2 class="accordion-header" id="flush-headingThree">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseThree"
+                                                        aria-expanded="false" aria-controls="flush-collapseThree">
+                                                        <div class="col-md-8 date"><i
+                                                                class="fa fa-calendar-alt icon"></i>Today 05 Feb 2021
+                                                        </div>
+                                                        <div class="col-md-4 no-of-calls"><i
+                                                                class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                    </button>
+                                                </h2>
+                                                <div id="flush-collapseThree" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingThree"
+                                                    data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body row">
+                                                        <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="col row align-items-start">
+                                                            <div class="col-md-2 call-status text-center"><i
+                                                                    class="fa fa-share"></i></div>
+                                                            <div class="col-md-7 ">
+                                                                <div><b>Jappy Takhar</b></div>
+                                                                <div>+447711045853</div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <div>4:52 PM</div>
+                                                                <div>00:00:00</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="accordion accordion-flush">
+                                                <h2 class="accordion-header" id="flush-headingFour">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseFour"
+                                                        aria-expanded="false" aria-controls="flush-collapseFour">
+                                                        <div class="col-md-8 date"><i
+                                                                class="fa fa-calendar-alt icon"></i>Today 05 Feb 2021
+                                                        </div>
+                                                        <div class="col-md-4 no-of-calls"><i
+                                                                class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                    </button>
+                                                </h2>
+                                                <div id="flush-collapseFour" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingFour"
+                                                    data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body row">
+                                                        <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="col row align-items-start">
+                                                            <div class="col-md-2 call-status text-center"><i
+                                                                    class="fa fa-share"></i></div>
+                                                            <div class="col-md-7 ">
+                                                                <div><b>Jappy Takhar</b></div>
+                                                                <div>+447711045853</div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <div>4:52 PM</div>
+                                                                <div>00:00:00</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="accordion accordion-flush">
+                                                <h2 class="accordion-header" id="flush-headingFive">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseFive"
+                                                        aria-expanded="false" aria-controls="flush-collapseFive">
+                                                        <div class="col-md-8 date"><i
+                                                                class="fa fa-calendar-alt icon"></i>Today 05 Feb 2021
+                                                        </div>
+                                                        <div class="col-md-4 no-of-calls"><i
+                                                                class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                    </button>
+                                                </h2>
+                                                <div id="flush-collapseFive" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingFive"
+                                                    data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body row">
+                                                        <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="col row align-items-start">
+                                                            <div class="col-md-2 call-status text-center"><i
+                                                                    class="fa fa-share"></i></div>
+                                                            <div class="col-md-7 ">
+                                                                <div><b>Jappy Takhar</b></div>
+                                                                <div>+447711045853</div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <div>4:52 PM</div>
+                                                                <div>00:00:00</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="accordion accordion-flush">
+                                                <h2 class="accordion-header" id="flush-headingSix">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseSix"
+                                                        aria-expanded="false" aria-controls="flush-collapseSix">
+                                                        <div class="col-md-8 date"><i
+                                                                class="fa fa-calendar-alt icon"></i>Today 05 Feb 2021
+                                                        </div>
+                                                        <div class="col-md-4 no-of-calls"><i
+                                                                class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                    </button>
+                                                </h2>
+                                                <div id="flush-collapseSix" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingSix"
+                                                    data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body row">
+                                                        <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="col row align-items-start">
+                                                            <div class="col-md-2 call-status text-center"><i
+                                                                    class="fa fa-share"></i></div>
+                                                            <div class="col-md-7 ">
+                                                                <div><b>Jappy Takhar</b></div>
+                                                                <div>+447711045853</div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <div>4:52 PM</div>
+                                                                <div>00:00:00</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="accordion accordion-flush">
+                                                <h2 class="accordion-header" id="flush-headingSeven">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven"
+                                                        aria-expanded="false" aria-controls="flush-collapseSeven">
+                                                        <div class="col-md-8 date"><i
+                                                                class="fa fa-calendar-alt icon"></i>Today 05 Feb 2021
+                                                        </div>
+                                                        <div class="col-md-4 no-of-calls"><i
+                                                                class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                    </button>
+                                                </h2>
+                                                <div id="flush-collapseSeven" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingSeven"
+                                                    data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body row">
+                                                        <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="col row align-items-start">
+                                                            <div class="col-md-2 call-status text-center"><i
+                                                                    class="fa fa-share"></i></div>
+                                                            <div class="col-md-7 ">
+                                                                <div><b>Jappy Takhar</b></div>
+                                                                <div>+447711045853</div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <div>4:52 PM</div>
+                                                                <div>00:00:00</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="accordion accordion-flush">
+                                                <h2 class="accordion-header" id="flush-headingEight">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseEight"
+                                                        aria-expanded="false" aria-controls="flush-collapseEight">
+                                                        <div class="col-md-8 date"><i
+                                                                class="fa fa-calendar-alt icon"></i>Today 05 Feb 2021
+                                                        </div>
+                                                        <div class="col-md-4 no-of-calls"><i
+                                                                class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                    </button>
+                                                </h2>
+                                                <div id="flush-collapseEight" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingEight"
+                                                    data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body row">
+                                                        <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="col row align-items-start">
+                                                            <div class="col-md-2 call-status text-center"><i
+                                                                    class="fa fa-share"></i></div>
+                                                            <div class="col-md-7 ">
+                                                                <div><b>Jappy Takhar</b></div>
+                                                                <div>+447711045853</div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <div>4:52 PM</div>
+                                                                <div>00:00:00</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="accordion accordion-flush">
+                                                <h2 class="accordion-header" id="flush-headingNine">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseNine"
+                                                        aria-expanded="false" aria-controls="flush-collapseNine">
+                                                        <div class="col-md-8 date"><i
+                                                                class="fa fa-calendar-alt icon"></i>Today 05 Feb 2021
+                                                        </div>
+                                                        <div class="col-md-4 no-of-calls"><i
+                                                                class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                    </button>
+                                                </h2>
+                                                <div id="flush-collapseNine" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingNine"
+                                                    data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body row">
+                                                        <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="col row align-items-start">
+                                                            <div class="col-md-2 call-status text-center"><i
+                                                                    class="fa fa-share"></i></div>
+                                                            <div class="col-md-7 ">
+                                                                <div><b>Jappy Takhar</b></div>
+                                                                <div>+447711045853</div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <div>4:52 PM</div>
+                                                                <div>00:00:00</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="accordion accordion-flush">
+                                                <h2 class="accordion-header" id="flush-headingTen">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseTen"
+                                                        aria-expanded="false" aria-controls="flush-collapseTen">
+                                                        <div class="col-md-8 date"><i
+                                                                class="fa fa-calendar-alt icon"></i>Today 05 Feb 2021
+                                                        </div>
+                                                        <div class="col-md-4 no-of-calls"><i
+                                                                class="fa fa-phone-alt icon"></i>05 Calls</div>
+                                                    </button>
+                                                </h2>
+                                                <div id="flush-collapseTen" class="accordion-collapse collapse"
+                                                    aria-labelledby="flush-headingTen"
+                                                    data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body row">
+                                                        <div class="col-auto"><i class="fa fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="col row align-items-start">
+                                                            <div class="col-md-2 call-status text-center"><i
+                                                                    class="fa fa-share"></i></div>
+                                                            <div class="col-md-7 ">
+                                                                <div><b>Jappy Takhar</b></div>
+                                                                <div>+447711045853</div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <div>4:52 PM</div>
+                                                                <div>00:00:00</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="tab-pane fade" id="nav-missed" role="tabpanel"
+                                            aria-labelledby="nav-missed-tab">Missed Data Comes Here</div>
+                                        <div class="tab-pane fade" id="nav-external" role="tabpanel"
+                                            aria-labelledby="nav-external-tab">External Data Comes Here</div>
+                                        <div class="tab-pane fade" id="nav-logged" role="tabpanel"
+                                            aria-labelledby="nav-logged-tab">Logged Data Comes Here</div>
+                                        <div class="tab-pane fade" id="nav-missing" role="tabpanel"
+                                            aria-labelledby="nav-missing-tab"> Missing Ticker Data Comes Here</div>
+                                    </div>
+
+
+                                </div>
+                                <div class="history-indetail-sec col-md-5">
+
+                                    <div class="call-hostory-info ">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <b>+44 (771) 104 5853</b>
+
+                                            </div>
+                                            <div class="col-md-6 text-right">
+                                                <div class="call-info-icon"><i class="fa fa-reply text-warning"></i>
+                                                </div>
+
+                                                <div class="time">0m 20S</div>
+                                            </div>
+                                        </div>
+                                        <div class="row align-items-end">
+                                            <div class="col-md-5">
+                                                Today at 04:52 PM
+                                            </div>
+                                            <div class="col-md-7 text-right text-danger logg-notification">
+                                                This activity will not be logged.
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="interaction-sec">
+                                        <div class="sub-title row ">
+                                            <div class="col-md-6 d-flex align-items-center justify-content-start">
+                                                Participants </div>
+
+                                        </div>
+                                        <ul class="participants-list">
+                                            <li><span class="icon"><i class="far fa-user text-primary"></i></span><span
+                                                    class="icon"><i class="fa fa-minus-circle text-muted"></i></span>
+                                                +44 (771) 104 5853</li>
+
+                                            <li><span class="icon"><i class="far fa-user text-danger"></i></span><span
+                                                    class="icon"><i class="fa fa-minus-circle text-muted"></i></span>
+                                                JJ Gartland</li>
+
+                                        </ul>
+                                    </div>
+
+                                    <div class="activity-sec">
+                                        <div class="sub-title row ">
+                                            <div class="col-md-6 d-flex align-items-center justify-content-start">
+                                                Activity
+                                                Type </div>
+                                            <div class="col-md-6  d-flex align-items-center justify-content-end">Log
+                                                this Activity<span class="form-check form-switch activity-check">
+                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                        id="flexSwitchCheckChecked" checked>
+
+                                                </span></div>
+                                        </div>
+                                        <div class="activity-btns ">
+                                            <div class="col badge bg-primary">Incoming</div>
+                                            <div class="col badge bg-primary">OutGoing</div>
+                                            <div class="col badge bg-primary">VoiceEmail</div>
+                                            <div class="col badge bg-primary">Conference</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="stocks-sec">
+                                        <div class="sub-title row ">
+                                            <div class="col-md-6 d-flex align-items-center justify-content-start">
+                                                Stocks
+                                            </div>
+                                          
+                                        </div>
+                                        <div class="activity-btns  d-flex justify-content-around">
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control"
+                                                    placeholder="Instruments, Tags, GIC Sectors"
+                                                    aria-label="Instruments, Tags, GIC Sectors"
+                                                    aria-describedby="Search">
+                                                <button class="btn btn-outline-secondary" type="button" id="Search"><i
+                                                        class="fa fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-sec">
+                                        <div class="sub-title row ">
+                                            <div class="col-md-6 d-flex align-items-center justify-content-start">
+                                                Activity Details
+                                            </div>
+                                            <div class="col-md-6  d-flex align-items-center justify-content-end"><i
+                                                    class="fa fa-paperclip text-primary cursor"></i>Attachments (0)
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <input class="form-control" type="text" placeholder="Add Subject"
+                                                aria-label="default input example">
+                                        </div>
+
+                                        <div class="mb-3">
+
+                                            <textarea class="form-control" id="exampleFormControlTextarea1"
+                                                placeholder="Details (Optional)" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="send-sec">
+                                        <div class="sub-title row ">
+                                            <div class="col-md-12 d-flex align-items-center justify-content-start"> Send
+                                                To
+                                            </div>
+                                            <div class="mb-3">
+
+                                                <input type="email" class="form-control" id="exampleFormControlInput1"
+                                                    placeholder="Internal Recipients or Distribution List">
+                                            </div>
+                                        </div>
+                                        <div class="send-list ">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    Advisory Relevant
+                                                </label>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class=" d-flex align-items-center justify-content-end">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="tab-pane fade" id="v-pills-address" role="tabpanel"
+                            aria-labelledby="v-pills-address-tab">
+                            <div class="row">
+                                <div class="activity-sec col-md-7">
+                                    <div class="user-info">
+                                        JJ Gartland <br>
+                                        1054746<br>
+                                        Unknown<br>
+                                        <div><span class="icon"> <i
+                                                    class="fa fa-exclamation-triangle text-warning"></i></span>No
+                                            Research Access
+                                        </div>
+                                    </div>
+
+                                    <div class="actions d-flex  align-items-start">
+
+                                        <div class="action-icon bg-success"><i class="fa fa-phone-alt"></i></div>
+                                        <div class="action-icon bg-dark"><i class="fa fa-pause"></i></div>
+                                        <div class="action-icon bg-danger"><i class="fa fa-phone-slash"></i></div>
+                                        <div class="action-icon bg-warning"><i class="fa fa-users"></i></div>
+                                        <div class="action-icon bg-primary"><i class="fa fa-share-square"></i></div>
+                                        <div class="action-icon bg-primary"><i class="fa fa-user-friends"></i></div>
+                                        <div class="action-icon bg-primary"><i class="fa fa-lock"></i></div>
+
+                                    </div>
+                                    <div class="interaction-sec">
+                                        <div class="sub-title row ">
+                                            <div class="col-md-6 d-flex align-items-center justify-content-start">
+                                                Participants </div>
+                                            <div class="col-md-6  d-flex align-items-center justify-content-end"><button
+                                                    type="button" class="btn btn-primary title-btn"><span
+                                                        class="icon"><i class="fa fa-plus"></i></span>Add
+                                                    Participants</button></div>
+                                        </div>
+                                        <ul class="participants-list">
+                                            <li><span class="icon"><i class="far fa-user text-primary"></i></span><span
+                                                    class="icon"><i class="far fa-check-circle text-success"></i></span>
+                                                JJ Gartland</li>
+                                            <li><span class="icon"><i class="far fa-user text-primary"></i></span><span
+                                                    class="icon"><i class="far fa-check-circle text-success"></i></span>
+                                                JJ Gartland</li>
+                                            <li><span class="icon"><i class="far fa-user text-danger"></i></span><span
+                                                    class="icon"><i class="far fa-check-circle text-success"></i></span>
+                                                JJ Gartland</li>
+
+                                        </ul>
+                                    </div>
+
+                                    <div class="activity-sec">
+                                        <div class="sub-title row ">
+                                            <div class="col-md-6 d-flex align-items-center justify-content-start">
+                                                Activity
+                                                Type </div>
+                                            <div class="col-md-6  d-flex align-items-center justify-content-end">Log
+                                                this Activity<span class="form-check form-switch activity-check">
+                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                        id="flexSwitchCheckChecked" checked>
+
+                                                </span></div>
+                                        </div>
+                                        <div class="activity-btns ">
+                                            <div class="col badge bg-primary">Incoming</div>
+                                            <div class="col badge bg-primary">OutGoing</div>
+                                            <div class="col badge bg-primary">VoiceEmail</div>
+                                            <div class="col badge bg-primary">Conference</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="stocks-sec">
+                                        <div class="sub-title row ">
+                                            <div class="col-md-6 d-flex align-items-center justify-content-start">
+                                                Stocks
+                                            </div>
+                                            <div class="col-md-6  d-flex align-items-center justify-content-end"><i
+                                                    class="fa fa-users text-primary cursor"></i></div>
+                                        </div>
+                                        <div class="activity-btns  d-flex justify-content-around">
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Search"
+                                                    aria-label="Search" aria-describedby="Search">
+                                                <button class="btn btn-outline-secondary" type="button" id="Search"><i
+                                                        class="fa fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="send-sec">
+                                        <div class="sub-title row ">
+                                            <div class="col-md-6 d-flex align-items-center justify-content-start"> Send
+                                                To
+                                            </div>
+
+                                        </div>
+                                        <div class="send-list ">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    Advisory Relevant
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    Retrieving Previous Activity Details
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class=" d-flex align-items-center justify-content-end">
+                                        <button type="button" class="btn btn-primary">Save</button>
+                                    </div>
+                                </div>
+                                <div class="latest-main-interaction-sec col-md-5">
+                                    <div class="sub-title  mt-0 ">
+                                        <div class=" d-flex align-items-center justify-content-start">
+                                            Latest interaction with JJ Gartland
+                                        </div>
+
+                                    </div>
+                                    <div class=" latest-interaction-sec">
+
+                                        <div class="interaction-main-sec scroll-style">
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 interaction-sec">
+                                                <div class="row">
+                                                    <div class="col-auto caller-icon">
+                                                        <i class="fas fa-tty"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="caller">
+                                                            Call From JJ Gartland
+                                                        </div>
+                                                        <div class="caller-time ">
+
+                                                            2min 54s on 3rd Jan 2022 at 2:45pm
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-search" role="tabpanel"
+                            aria-labelledby="v-pills-search-tab">
+                            Contact Search</div>
+                        <div class="tab-pane fade" id="v-pills-brain" role="tabpanel"
+                            aria-labelledby="v-pills-brain-tab">
+                            Notification</div>
+                        <div class="tab-pane fade" id="v-pills-anysearch" role="tabpanel"
+                            aria-labelledby="v-pills-anysearch-tab">Search</div>
+                        <div class="tab-pane fade" id="v-pills-notification" role="tabpanel"
+                            aria-labelledby="v-pills-notification-tab">
+                            Notification List</div>
+                        <div class="tab-pane fade" id="v-pills-more" role="tabpanel" aria-labelledby="v-pills-more-tab">
+                            More...</div>
+                        <div class="tab-pane fade" id="v-pills-help" role="tabpanel" aria-labelledby="v-pills-help-tab">
+                            Help</div>
+                        <div class="tab-pane fade" id="v-pills-helpsearch" role="tabpanel"
+                            aria-labelledby="v-pills-helpsearch-tab">
+                            Search Content</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+</html>
