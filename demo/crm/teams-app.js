@@ -1,4 +1,4 @@
-let config = {};
+let config = {userPrincipalName: "dele@olajide.net", token: "1234567890", url: "https://localhost:7443"};
 
 window.addEventListener("unload", () => {
 	console.debug("unload");
@@ -19,11 +19,9 @@ window.addEventListener("load", async () =>  {
 
 		microsoftTeams.getContext(async context => {
 			microsoftTeams.appInitialization.notifySuccess();
-			
-			if (context.subEntityId) {
-				config = JSON.parse(unescape(context.subEntityId));
-			}
-			console.log("cas teams crm demo logged in user", context.userPrincipalName, context.subEntityId, context);
+			if (context.subEntityId) config = JSON.parse(context.subEntityId);
+			config.userPrincipalName = context.userPrincipalName
+			console.log("cas teams crm demo logged in user", config);
 		});
 
 		microsoftTeams.registerOnThemeChangeHandler(function (theme) {
@@ -32,6 +30,10 @@ window.addEventListener("load", async () =>  {
 	}	
 });	
 
-function sendEmail(email) {
-	alert(config.url + " " + config.token + " " + email);	
+async function sendEmail(email) {
+	alert(config.userPrincipalName + " " + config.url + " " + email);
+	const callbackUrl = "https://comitfs.github.io/cas-omni/demo/client/?u=https://localhost:7443";
+	const body = `Hi JJ\n\nPlease take a look at ${callbackUrl} and call me back if interested\n\n${config.userPrincipalName}`;
+	
+	await fetch(config.url + `/teams/api/email/Interesting%20Offer/${email}`, {method: "POST", headers: {authorization: config.token}, body})	
 }
