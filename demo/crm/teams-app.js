@@ -5,13 +5,19 @@ window.addEventListener("unload", () => {
 window.addEventListener("load", async () =>  {
 	console.debug("window.load", window.location.hostname, window.location.origin);
 	
+	const urlParam = (name) => {
+		var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		if (!results) { return undefined; }
+		return unescape(results[1] || undefined);
+	}; 	
+	
 	if (microsoftTeams in window) {
 		microsoftTeams.initialize();
 		microsoftTeams.appInitialization.notifyAppLoaded();
 
 		microsoftTeams.getContext(async context => {
 			microsoftTeams.appInitialization.notifySuccess();	
-			console.log("cas teams crm demo logged in user", context.userPrincipalName, context);
+			console.log("cas teams crm demo logged in user", context.userPrincipalName, context.subEntityId, context);
 		});
 
 		microsoftTeams.registerOnThemeChangeHandler(function (theme) {
