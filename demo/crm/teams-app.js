@@ -1,4 +1,4 @@
-let config = {userPrincipalName: "dele@olajide.net", token: "1234567890", url: "https://localhost:7443"};
+let config = {userPrincipalName: "dele@olajide.net", token: "1234567890", url: "http://localhost:7070"};
 
 window.addEventListener("unload", () => {
 	console.debug("unload");
