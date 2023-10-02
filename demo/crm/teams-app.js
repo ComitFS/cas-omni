@@ -1,3 +1,5 @@
+let config = {};
+
 window.addEventListener("unload", () => {
 	console.debug("unload");
 });
@@ -16,7 +18,9 @@ window.addEventListener("load", async () =>  {
 		microsoftTeams.appInitialization.notifyAppLoaded();
 
 		microsoftTeams.getContext(async context => {
-			microsoftTeams.appInitialization.notifySuccess();	
+			microsoftTeams.appInitialization.notifySuccess();
+			config = JSON.parse(unescape(context.subEntityId));
+			alert(config.url + " " + config.token);
 			console.log("cas teams crm demo logged in user", context.userPrincipalName, context.subEntityId, context);
 		});
 
@@ -25,3 +29,7 @@ window.addEventListener("load", async () =>  {
 		});	
 	}	
 });	
+
+function sendEmail(email) {
+	alert(email);
+}
