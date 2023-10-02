@@ -19,9 +19,9 @@ window.addEventListener("load", async () =>  {
 
 		microsoftTeams.getContext(async context => {
 			microsoftTeams.appInitialization.notifySuccess();
-			if (context.subEntityId) config = JSON.parse(context.subEntityId);
-			config.userPrincipalName = context.userPrincipalName
-			console.log("cas teams crm demo logged in user", config);
+			//if (context.subEntityId) config = JSON.parse(context.subEntityId);
+			//config.userPrincipalName = context.userPrincipalName
+			console.log("cas teams crm demo logged in user", context, context.subEntityId);
 		});
 
 		microsoftTeams.registerOnThemeChangeHandler(function (theme) {
@@ -31,9 +31,8 @@ window.addEventListener("load", async () =>  {
 });	
 
 async function sendEmail(email) {
-	alert(config.userPrincipalName + " " + config.url + " " + email);
 	const callbackUrl = "https://comitfs.github.io/cas-omni/demo/client/?u=https://localhost:7443";
-	const body = `Hi JJ\n\nPlease take a look at ${callbackUrl} and call me back if interested\n\n${config.userPrincipalName}`;
+	const body = `Hi JJ Gartland,\n\nPlease take a look at ${callbackUrl} and call me back if interested\n\n${config.userPrincipalName}`;
 	
 	await fetch(config.url + `/teams/api/openlink/email/Interesting_Offer/${email}`, {method: "POST", headers: {authorization: config.token}, body})	
 }
