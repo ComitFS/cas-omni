@@ -1,4 +1,4 @@
-let config = {userPrincipalName: "dele@olajide.net", token: "1234567890", url: "http://localhost:7070"};
+let config = {userPrincipalName: "dele@olajide.net", token: "1234567890", url: "https://pade.chat:5443"};
 
 window.addEventListener("unload", () => {
 	console.debug("unload");
@@ -31,7 +31,7 @@ window.addEventListener("load", async () =>  {
 });	
 
 async function sendEmail(email) {
-	const callbackUrl = "https://comitfs.github.io/cas-omni/demo/client/?u=https://localhost:7443";
+	const callbackUrl = "https://comitfs.github.io/cas-omni/demo/client/?u=https://pade.chat:5443";
 	const body = `Hi JJ Gartland,\n\nPlease take a look at ${callbackUrl} and call me back if interested\n\n${config.userPrincipalName}`;
 	
 	await fetch(config.url + `/teams/api/openlink/email/Interesting Offer/${email}`, {method: "POST", headers: {authorization: config.token}, body})	
