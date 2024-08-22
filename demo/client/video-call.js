@@ -18,8 +18,14 @@ window.onload = async () => {
 	const token = data.token;		
 	const locator = data.locator;
 	
-	callAdapter = await callComposite.loadCallComposite({displayName, locator,	userId,	token}, content, {formFactor: 'desktop',	key: new Date()	});	
-	currentCall = await callAdapter.startCall([destination]);		
+	callAdapter = await callComposite.loadCallComposite({displayName, locator,	userId,	token}, content, {formFactor: 'desktop',	key: new Date()	});		
+
+	if (locator.meetingLink) {
+		currentCall = await callAdapter.joinCall();			
+		currentCall.addParticipant(destination, {});
+	} else {
+		currentCall = await callAdapter.startCall([destination]);	  							
+	}	
 }
 
 window.onbeforeunload = () => {
