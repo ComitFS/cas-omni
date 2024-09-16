@@ -14,7 +14,7 @@ window.addEventListener("load", async function(){
 	const userId = { communicationUserId: '8:acs:7278b90e-91bb-4a42-8913-9233b5d4ad4f_0000000d-ce88-0aa9-0cf9-9c3a0d004831' };
 
 	const url = urlParam("u") ? urlParam("u") : "";
-	let casUrl = url + "/teams/api/openlink/config/global";	
+	let casUrl = url + getRootPath() + "/config/global";	
 	
 	let response = await fetch(casUrl, {method: "GET"});
 	const config = await response.json();				
@@ -46,3 +46,12 @@ window.addEventListener("load", async function(){
       callAdapter.dispose();
     };	
 });
+
+function getRootPath() {
+	let url =  "/teams/api/openlink";
+	
+	if (getSetting("cas_paas_enabled")) {
+		url =  "/plugins/casapi/v1/companion";
+	}
+	return url;
+}
