@@ -1,0 +1,108 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.16",
+    "version": "2.0.0",
+    "id": "569a789b-268a-4029-a01b-9b14f07e23d5",
+    "developer": {
+        "name": "ComitFS Ltd",
+        "websiteUrl": "https://comitfs.com",
+        "privacyUrl": "https://www.comitfs.com/about/",
+        "termsOfUseUrl": "https://www.comitfs.com/about/"
+    },
+    "name": {
+        "short": "CAS Service",
+        "full": "CAS Service for Teams"
+    },
+    "description": {
+        "short": "Adds CAS Service to MS Teams",
+        "full": "This application adds CAS Service to MS Teams"
+    },
+    "icons": {
+        "color": "color.png",
+        "outline": "outline.png"
+    },
+    "accentColor": "#F9F9FA",
+	"configurableTabs": [
+		{
+		  "configurationUrl": "http://localhost/casweb/tab/app/config.html",
+		  "canUpdateConfiguration": true,
+		  "scopes": [
+			"groupchat"
+		  ],
+		  "context": [
+			"meetingDetailsTab",
+			"meetingSidePanel"
+		  ],
+		  "meetingSurfaces": [
+			"sidePanel",
+			"stage"
+		  ]
+		}
+	],
+    "supportedChannelTypes": [
+        "sharedChannels",
+        "privateChannels"
+    ],
+    "bots": [
+        {
+            "botId": "569a789b-268a-4029-a01b-9b14f07e23d5",
+            "scopes": [
+                "personal"
+            ],
+            "needsChannelSelector": false,
+            "isNotificationOnly": false,
+            "supportsFiles": true,
+            "supportsCalling": false,
+            "supportsVideo": false
+        }
+    ],
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ],
+    "devicePermissions": [
+        "geolocation",
+        "media",
+        "notifications",
+        "midi",
+        "openExternal"
+    ],
+    "validDomains": [
+		"comitfs.github.io",
+        "token.botframework.com"	
+    ],
+    "webApplicationInfo": {
+        "id": "569a789b-268a-4029-a01b-9b14f07e23d5",
+        "resource": "https://comitfs.github.io/cas-workflow-public/call-service/"
+    },
+    "authorization": {
+        "permissions": {
+            "resourceSpecific": [
+                {
+                    "type": "Application",
+                    "name": "ChannelSettings.Read.Group"
+                },
+                {
+                    "type": "Delegated",
+                    "name": "ChannelMeetingParticipant.Read.Group"
+                }
+            ]
+        }
+    },
+    "showLoadingIndicator": false,
+    "isFullScreen": false,
+    "defaultBlockUntilAdminAction": true,
+    "publisherDocsUrl": "https://comitfs.github.io/cas-workflow-public/call-service/",
+    "defaultInstallScope": "personal",
+    "configurableProperties": [
+        "name",
+        "shortDescription",
+        "longDescription",
+        "smallImageUrl",
+        "largeImageUrl",
+        "accentColor",
+        "developerUrl",
+        "privacyUrl",
+        "termsOfUseUrl"
+    ]
+}
