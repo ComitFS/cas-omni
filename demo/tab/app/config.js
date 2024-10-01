@@ -15,13 +15,13 @@ window.addEventListener("load", async () =>  {
 	const context = await microsoftTeams.app.getContext();	
 	
 	microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
-		const url = `${window.location.origin}/casweb/tab/app/index.html`;
+		const url = "https://comitfs.github.io/cas-omni/demo/tab/app/index.html";
 		
 		const configPromise = microsoftTeams.pages.config.setConfig({
 			websiteUrl: url,
 			contentUrl: url,
-			entityId: "1234567890",
-			suggestedDisplayName: "Dele Olajide"
+			entityId: "cas-serve",
+			suggestedDisplayName: "CAS Companion"
 		});
 		configPromise.then((result) => {saveEvent.notifySuccess()}).catch((error) => {saveEvent.notifyFailure("failure message")});
 	});	
