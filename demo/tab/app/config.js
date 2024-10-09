@@ -27,7 +27,7 @@ window.addEventListener("load", async () =>  {
 		configPromise.then((result) => {saveEvent.notifySuccess()}).catch((error) => {saveEvent.notifyFailure("failure message")});
 	});	
 	
-	document.querySelector("#save").addEventListener("click", async (evt) => {
+	document.querySelector("#edit").addEventListener("click", async (evt) => {
 		microsoftTeams.settings.setValidityState(true);		
 	});
 	
