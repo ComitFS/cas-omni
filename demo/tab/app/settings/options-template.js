@@ -1,3 +1,5 @@
+// https://github.com/fent/chrome-options
+
 cas_companion.options.opts.about = "";
 cas_companion.options.opts.autoSave = true;
 cas_companion.options.opts.saveDefaults = true;
