@@ -1,6 +1,6 @@
 // https://github.com/fent/chrome-options
 
-cas_companion.options.opts.about = "<h3>CAS Companion</h3>This application adds CAS Companion to MS Teams";
+cas_companion.options.opts.about = "";
 cas_companion.options.opts.autoSave = true;
 cas_companion.options.opts.saveDefaults = true;
 
