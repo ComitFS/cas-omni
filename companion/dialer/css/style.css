@@ -1,0 +1,507 @@
+body {
+  margin: 0;
+  color: #444;
+  font: 300 13px/13px Roboto, sans-serif; }
+
+.pull-left {
+  float: left; }
+
+.pull-right {
+  float: right; }
+
+.clearfix:after {
+  content: '';
+  display: table;
+  clear: both;
+  display: block; }
+.clearfix:before {
+  content: '';
+  display: table; }
+
+.main-button .btn-primary {
+  color: #fff;
+  background-color: #479ac8;
+  border-color: #479ac8; }
+
+.dial-pad-wrap {
+  position: relative;
+  margin: 50px auto 0;
+  background: #ecf0f1;
+  box-shadow: -1px 6px 13px 0 #3333331f, -1px 1px 2px 0 #3333331f;
+  border-radius: 20px;
+  width: 300px; }
+  .dial-pad-wrap .dial-pad {
+    height: 100%;
+    padding: 0px; }
+    .dial-pad-wrap .dial-pad .dailed-screen {
+      background-color: #fff;
+      text-align: center;
+      padding: 5px 0px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px; }
+  .dial-pad-wrap .dial-screen {
+    height: 50px;
+    padding: 0 15px;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 50px;
+    text-align: center;
+    background: #fff;
+    overflow-x: auto;
+    overflow-y: hidden; }
+  .dial-pad-wrap .call-table {
+    overflow-y: auto;
+    min-height: 385px;
+    max-height: 385px; }
+    .dial-pad-wrap .call-table .call-list {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 5px;
+      margin: 10px; }
+      .dial-pad-wrap .call-table .call-list .icon {
+        background-color: #ecf0f1;
+        border-radius: 10px;
+        padding: 5px;
+        width: 60px;
+        height: 60px;
+        color: #4caf50; }
+      .dial-pad-wrap .call-table .call-list .call-list-details {
+        padding: 5px;
+        font-size: 12px; }
+        .dial-pad-wrap .call-table .call-list .call-list-details .time {
+          color: #2196f3;
+          text-align: right;
+          font-size: 9px; }
+        .dial-pad-wrap .call-table .call-list .call-list-details .actions .actions-list {
+          text-align: right; }
+          .dial-pad-wrap .call-table .call-list .call-list-details .actions .actions-list .progress {
+            display: flex;
+            height: 0.2rem; }
+          .dial-pad-wrap .call-table .call-list .call-list-details .actions .actions-list span {
+            margin-right: 10px; }
+            .dial-pad-wrap .call-table .call-list .call-list-details .actions .actions-list span:last-child {
+              margin: 0px; }
+        .dial-pad-wrap .call-table .call-list .call-list-details .phone-numbers {
+          font-size: 10px; }
+          .dial-pad-wrap .call-table .call-list .call-list-details .phone-numbers span {
+            margin-right: 4px; }
+  .dial-pad-wrap .call-table.search-result {
+    overflow-y: auto;
+    min-height: 263px;
+    max-height: 263px; }
+  .dial-pad-wrap .line-table {
+    overflow-y: auto;
+    min-height: 350px;
+    width: 100%;
+    max-height: 350px; }
+    .dial-pad-wrap .line-table .line-list {
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 5px;
+      margin: 10px; }
+      .dial-pad-wrap .line-table .line-list .icon {
+        margin-right: 5px;
+        color: #4caf50; }
+      .dial-pad-wrap .line-table .line-list .add-icon {
+        text-align: right;
+        font-size: 12px; }
+    .dial-pad-wrap .line-table .line-list-details .label {
+      font-size: 13px; }
+  .dial-pad-wrap .record-sec {
+    margin: 60px 0px; }
+    .dial-pad-wrap .record-sec .time {
+      font-size: 50px; }
+    .dial-pad-wrap .record-sec .record-icon {
+      font-size: 9rem;
+      margin: 20px 0px; }
+  .dial-pad-wrap .save-rec {
+    min-height: 350px; }
+    .dial-pad-wrap .save-rec .save-block {
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 5px;
+      margin: 10px; }
+  .dial-pad-wrap .search-sec .search-block {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 10px; }
+  .dial-pad-wrap .record-table {
+    overflow-y: auto;
+    min-height: 398px;
+    width: 100%;
+    max-height: 398px; }
+    .dial-pad-wrap .record-table .record-list {
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 5px;
+      margin: 10px; }
+      .dial-pad-wrap .record-table .record-list .icon {
+        margin-right: 5px;
+        color: #4caf50; }
+      .dial-pad-wrap .record-table .record-list .actions {
+        text-align: right;
+        font-size: 12px; }
+        .dial-pad-wrap .record-table .record-list .actions span {
+          margin-right: 5px; }
+    .dial-pad-wrap .record-table .record-list-details .label {
+      font-size: 13px; }
+  .dial-pad-wrap .dailed-screen svg:hover,
+  .dial-pad-wrap .actions svg:hover,
+  .dial-pad-wrap .add-icon svg:hover,
+  .dial-pad-wrap .record-actions svg:hover {
+    color: #479AC8;
+    cursor: pointer; }
+  .dial-pad-wrap .dial-table {
+    width: 100%;
+    display: table;
+    padding: 10px; }
+  .dial-pad-wrap .dial-table-row {
+    display: table-row;
+    width: 100%;
+    display: table; }
+  .dial-pad-wrap .dial-table-col {
+    cursor: default;
+    width: 33.333333%;
+    text-align: center;
+    display: table-cell;
+    vertical-align: top; }
+    .dial-pad-wrap .dial-table-col .dial-key {
+      font-size: 22px;
+      font-weight: 400;
+      min-height: 30px;
+      line-height: 30px; }
+  .dial-pad-wrap .del-btn.dial-key-wrap {
+    margin-bottom: 0px;
+    cursor: pointer; }
+    .dial-pad-wrap .del-btn.dial-key-wrap:hover {
+      color: #479AC8;
+      background: transparent;
+      width: auto;
+      height: auto;
+      margin: 0 auto;
+      border-radius: 100%; }
+  .dial-pad-wrap .main-button {
+    margin-top: 10px; }
+  .dial-pad-wrap .dial-key-wrap {
+    margin-bottom: 10px; }
+    .dial-pad-wrap .dial-key-wrap:hover {
+      color: #fff;
+      background: #479AC8;
+      width: 60px;
+      height: 60px;
+      margin: 0 auto;
+      border-radius: 100%;
+      cursor: pointer; }
+      .dial-pad-wrap .dial-key-wrap:hover .dial-sub-key {
+        color: #eee; }
+  .dial-pad-wrap .no-sub-key .dial-key {
+    min-height: 40px;
+    line-height: 40px;
+    border-radius: 100%;
+    background-color: #42cd39;
+    width: 40px;
+    color: #fff;
+    margin: 0px auto 20px auto;
+    cursor: pointer; }
+  .dial-pad-wrap .dial-sub-key {
+    color: #aaa;
+    font-size: 14px;
+    text-transform: uppercase; }
+  .dial-pad-wrap .dial-key-wrap.active {
+    color: #eee;
+    background: #479AC8; }
+    .dial-pad-wrap .dial-key-wrap.active .dial-sub-key {
+      color: #eee; }
+  .dial-pad-wrap .no-sub-key .dial-sub-key {
+    display: none; }
+  .dial-pad-wrap .header-sec {
+    padding: 13px 20px; }
+    .dial-pad-wrap .header-sec .filter .dropdown-menu {
+      padding: 0px; }
+    .dial-pad-wrap .header-sec .filter .dropdown-item {
+      font-size: 12px;
+      padding: 0.25rem; }
+      .dial-pad-wrap .header-sec .filter .dropdown-item span {
+        margin-right: 5px; }
+  .dial-pad-wrap .headset {
+    padding: 10px;
+    font-size: 12px; }
+    .dial-pad-wrap .headset .status {
+      color: green;
+      padding: 5px;
+      background-color: #fff; }
+    .dial-pad-wrap .headset .left-headset {
+      background-color: #479AC8;
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+      color: #fff;
+      padding: 5px;
+      cursor: pointer; }
+    .dial-pad-wrap .headset .right-headset {
+      background-color: #479AC8;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      color: #fff;
+      padding: 5px;
+      cursor: pointer; }
+
+/******Floating Icons******/
+.zoom {
+  position: fixed;
+  bottom: 10px;
+  left: 20px; }
+
+.zoom-fab {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  background-color: #69acd2;
+  vertical-align: middle;
+  text-decoration: none;
+  text-align: center;
+  transition: 0.2s ease-out;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  color: #FFF; }
+  .zoom-fab:hover {
+    background-color: #479ac8;
+    color: #fff;
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2); }
+
+.zoom-btn-large {
+  width: 60px;
+  height: 60px;
+  line-height: 60px; }
+
+.zoom-btn-person {
+  background-color: #479AC8; }
+  .zoom-btn-person:hover {
+    background-color: #216f9b;
+    color: #fff; }
+
+.zoom-btn-doc {
+  background-color: #479AC8; }
+  .zoom-btn-doc:hover {
+    background-color: #216f9b;
+    color: #fff; }
+
+.zoom-btn-tangram {
+  background-color: #479AC8; }
+  .zoom-btn-tangram:hover {
+    background-color: #216f9b;
+    color: #fff; }
+
+.zoom-btn-report {
+  background-color: #479AC8; }
+  .zoom-btn-report:hover {
+    background-color: #216f9b;
+    color: #fff; }
+
+.zoom-btn-feedback {
+  background-color: #479AC8; }
+  .zoom-btn-feedback:hover {
+    background-color: #216f9b;
+    color: #fff; }
+
+.zoom-menu {
+  position: absolute;
+  left: 70px;
+  right: auto;
+  top: 50%;
+  transform: translateY(-32%);
+  height: 100%;
+  width: 500px;
+  list-style: none;
+  text-align: left; }
+  .zoom-menu li {
+    display: inline-block;
+    margin-right: 10px; }
+
+.zoom-card {
+  position: absolute;
+  left: 150px;
+  bottom: 70px;
+  transition: box-shadow 0.25s;
+  border-radius: 20px; }
+  .zoom-card ul {
+    -webkit-padding-start: 0;
+    list-style: none;
+    text-align: left; }
+
+.scale-transition {
+  transition: transform 0.3s cubic-bezier(0.53, 0.01, 0.36, 1.63) !important; }
+  .scale-transition.scale-out {
+    transform: scale(0);
+    transition: transform 0.2s !important; }
+  .scale-transition.scale-in {
+    transform: scale(1); }
+
+/***Tag***/
+.tag {
+  background: #479ac8;
+  border-radius: 3px 0 0 3px;
+  color: #fff;
+  display: inline-block;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 14px 0 19px;
+  position: relative;
+  margin: 0 0px 0px 0;
+  text-decoration: none;
+  -webkit-transition: color 0.2s;
+  font-size: 10px; }
+  .tag::before {
+    background: #fff;
+    border-radius: 10px;
+    content: '';
+    height: 6px;
+    left: 6px;
+    position: absolute;
+    width: 6px;
+    top: 6px; }
+  .tag::after {
+    background: #fff;
+    border-bottom: 10px solid transparent;
+    border-left: 13px solid #479ac8;
+    border-top: 8px solid transparent;
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0; }
+  .tag:hover {
+    background-color: #216f9b;
+    color: white; }
+  .tag:hover::after {
+    border-left-color: #216f9b; }
+
+/**Start Record-Section***/
+.record-selection .btn.record-drp-btn {
+  font-weight: normal;
+  line-height: normal;
+  color: #212529;
+  border: 1px solid transparent;
+  padding: 0.1rem;
+  font-size: 0.8rem;
+  border-radius: none; }
+.record-selection .dropdown-menu {
+  padding: 0px; }
+.record-selection .dropdown-item {
+  font-size: 12px;
+  padding: 0.25rem; }
+  .record-selection .dropdown-item span {
+    margin-right: 5px !important; }
+
+/**End Record-Section***/
+/**Start Notification Section***/
+.notification-card {
+  background-color: #2c2c2c;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 10px;
+  color: #fff;
+  width: 300px;
+  float: right; }
+  .notification-card .icon {
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    padding: 5px;
+    width: 60px;
+    height: 60px;
+    color: #4caf50; }
+  .notification-card .notification-card-details {
+    padding: 0px 5px;
+    font-size: 11px; }
+    .notification-card .notification-card-details .time {
+      color: #479AC8;
+      text-align: right;
+      font-size: 9px; }
+      .notification-card .notification-card-details .time span {
+        margin-right: 4px; }
+    .notification-card .notification-card-details .actions .actions-list {
+      text-align: right; }
+      .notification-card .notification-card-details .actions .actions-list .progress {
+        display: flex;
+        height: 0.2rem; }
+      .notification-card .notification-card-details .actions .actions-list span {
+        margin-right: 10px; }
+        .notification-card .notification-card-details .actions .actions-list span:last-child {
+          margin: 0px; }
+    .notification-card .notification-card-details .phone-numbers {
+      font-size: 10px; }
+      .notification-card .notification-card-details .phone-numbers span {
+        margin-right: 4px; }
+
+.on-key {
+  min-height: 19px;
+  line-height: 9px;
+  border-radius: 100%;
+  background-color: #42cd39;
+  width: 22px;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px; }
+  .on-key svg {
+    display: inline-block;
+    font-size: inherit;
+    height: 0.6em;
+    overflow: visible;
+    vertical-align: -0.125em; }
+
+.cut-key {
+  min-height: 19px;
+  line-height: 9px;
+  border-radius: 100%;
+  background-color: #dc3545;
+  width: 22px;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px; }
+  .cut-key svg {
+    -ms-transform: rotate(134deg);
+    transform: rotate(134deg);
+    display: inline-block;
+    font-size: inherit;
+    height: 0.6em;
+    overflow: visible;
+    vertical-align: -0.125em; }
+
+/**End  Notification Section***/
+/**Start Scroll Style Section***/
+.scroll-style::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5; }
+
+.scroll-style::-webkit-scrollbar {
+  width: 12px;
+  background-color: #F5F5F5; }
+
+.scroll-style::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #555; }
+
+.scroll-style1::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5; }
+
+.scroll-style1::-webkit-scrollbar {
+  height: 12px;
+  background-color: #F5F5F5; }
+
+.scroll-style1::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #555; }
+
+/**end Scroll Style Section***/
+#dail-list,
+#record,
+#save-record {
+  display: none; }
+
+/*# sourceMappingURL=style.css.map */

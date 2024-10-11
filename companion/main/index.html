@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incoming Call</title>
+    <link rel="stylesheet" href="./css/fabric.min.css">
+    <link rel="stylesheet" href="./css/fabric.components.min.css">		
+    <link rel="stylesheet" href="./css/index.css">
+
+	<script src="./js/day.js"></script>	
+	<script type="module" src="./js/web-components.min.js"></script>	
+	<script src="../js/common.js"></script>				
+	<script src="./js/index.js" type="module"></script>
+</head>
+<body>
+	<div style="display:none" class="call-view">
+		<div class="header">
+        <div class="client-info">
+			<mgt-person id="client-id" person-query="4:+441634251467" line2-property="jobTitle" style="--person-line1-font-size: 24px;margin-bottom:5px;width:350px;" view="threelines" show-presence person-presence='{"availability": "Offline", "activity": "Offline"}' fallback-details='{"displayName":"No Match"}'></mgt-person>		
+			<fluent-button appearance="neutral" id="view-client">View Client</fluent-button>
+			
+			<div>
+				<fluent-button appearance="neutral" id="accept-call" title="Accept">
+					<svg width="80" height="17" viewBox="0 0 13 17" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+					  <path d="M3.98706 1.06589C4.89545 0.792081 5.86254 1.19479 6.31418 2.01224L6.38841 2.16075L7.04987 3.63213C7.46246 4.54992 7.28209 5.61908 6.60754 6.3496L6.47529 6.48248L5.43194 7.45541C5.24417 7.63298 5.38512 8.32181 6.06527 9.49986C6.67716 10.5597 7.17487 11.0552 7.41986 11.0823L7.4628 11.082L7.5158 11.0716L9.56651 10.4446C10.1332 10.2713 10.7438 10.4487 11.1298 10.8865L11.2215 11.0014L12.5781 12.8815C13.1299 13.6462 13.0689 14.6842 12.4533 15.378L12.3314 15.5039L11.7886 16.018C10.7948 16.9592 9.34348 17.2346 8.07389 16.7231C6.13867 15.9433 4.38077 14.1607 2.78368 11.3945C1.18323 8.62242 0.519004 6.20438 0.815977 4.13565C0.99977 2.85539 1.87301 1.78674 3.07748 1.3462L3.27036 1.28192L3.98706 1.06589Z"></path>			
+					</svg>
+				</fluent-button>
+				
+				<fluent-button appearance="neutral" id="decline-call" title="Decline">
+					<svg xmlns="http://www.w3.org/2000/svg" width="80" height="24" fill="#ffffff" viewBox="0 0 24 24">
+					  <path d="M14.12 15.47 13 16.59V12c0-.55-.45-1-1-1s-1 .45-1 1v4.59l-1.12-1.12c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l2.83 2.83c.39.39 1.03.39 1.41 0l2.83-2.83c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0ZM15.67 6l-7.37.02c-2.73 0-5.02 2.07-5.3 4.79-.07.7.48 1.31 1.18 1.31h2.48c1.01 0 1.76-.95 1.54-1.93-.11-.49.26-.96.77-.96h6.04c.51-.02.88.45.77.94-.22.99.54 1.92 1.55 1.92h2.48c.7 0 1.25-.62 1.18-1.32a5.326 5.326 0 0 0-5.32-4.76Z"/>
+					</svg>			
+				</fluent-button>
+
+				<fluent-button appearance="neutral" id="return-call">Call
+					<!--svg width="80" height="17" viewBox="0 0 13 17" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+					  <path d="M3.98706 1.06589C4.89545 0.792081 5.86254 1.19479 6.31418 2.01224L6.38841 2.16075L7.04987 3.63213C7.46246 4.54992 7.28209 5.61908 6.60754 6.3496L6.47529 6.48248L5.43194 7.45541C5.24417 7.63298 5.38512 8.32181 6.06527 9.49986C6.67716 10.5597 7.17487 11.0552 7.41986 11.0823L7.4628 11.082L7.5158 11.0716L9.56651 10.4446C10.1332 10.2713 10.7438 10.4487 11.1298 10.8865L11.2215 11.0014L12.5781 12.8815C13.1299 13.6462 13.0689 14.6842 12.4533 15.378L12.3314 15.5039L11.7886 16.018C10.7948 16.9592 9.34348 17.2346 8.07389 16.7231C6.13867 15.9433 4.38077 14.1607 2.78368 11.3945C1.18323 8.62242 0.519004 6.20438 0.815977 4.13565C0.99977 2.85539 1.87301 1.78674 3.07748 1.3462L3.27036 1.28192L3.98706 1.06589Z"></path>			
+					</svg-->				
+				</fluent-button>	
+				<fluent-button appearance="neutral" id="make-next-call">Next Call</fluent-button>					
+				<fluent-button appearance="neutral" id="request-join-call">Request To Join</fluent-button>					
+			</div>					
+
+			<div>
+				<fluent-button appearance="neutral" id="accept-suggestion">Accept</fluent-button>				
+				<fluent-button appearance="neutral" id="decline-suggestion">Decline</fluent-button>	
+			</div>	
+			
+			<div id="call-controls">
+				<table>
+				<tr><td>
+					<fluent-button id="mute-mic" title="Mute Microphone" class="call-action" class="call-action" appearance="neutral"><svg fill="#AAA" aria-hidden="true" width="2em" height="2em" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 10a.5.5 0 0 0-1 0 5.5 5.5 0 0 0 5 5.48v2.02a.5.5 0 0 0 1 0v-2.02c2.8-.26 5-2.61 5-5.48a.5.5 0 0 0-1 0 4.5 4.5 0 1 1-9 0Zm7.5 0a3 3 0 0 1-6 0V5a3 3 0 0 1 6 0v5Z"></path></svg></svg></fluent-button>
+					<fluent-button id="hold-call" title="Put call on hold" class="call-action" appearance="neutral"><svg fill="#AAA" aria-hidden="true" width="2em" height="2em" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 2a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H5Zm8 0a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-2Z"></path></svg></fluent-button>	
+					<fluent-button id="invite-user" title="Invite a colleague to join call" class="call-action" appearance="neutral"><svg fill="#AAA" aria-hidden="true" width="2em" height="2em" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-5 9a2 2 0 0 0-2 2c0 1.7.83 2.97 2.13 3.8A9.14 9.14 0 0 0 10 18c1.85 0 3.58-.39 4.87-1.2A4.35 4.35 0 0 0 17 13a2 2 0 0 0-2-2H5Z"></path></svg></fluent-button>	
+					<fluent-button id="transfer-call" title="Transfer call to colleage" class="call-action" appearance="neutral"><svg fill="#AAA" aria-hidden="true" width="2em" height="2em" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M3.55 2.44a4.1 4.1 0 0 1 2.99-.32c.5.12.94.45 1.2.9l.97 1.7a2.5 2.5 0 0 1-.67 3.24l-.6.45c-.28.22-.4.52-.34.77.18.82.59 1.57 1.15 2.13.17.16.47.22.8.1l.66-.26a2.5 2.5 0 0 1 3.07 1.11l.95 1.7c.27.48.31 1.04.12 1.54a3.9 3.9 0 0 1-1.96 2.22c-.9.41-1.94.4-2.88-.24-1.5-1-3.3-2.68-4.94-5.48a13.27 13.27 0 0 1-2.03-7.06 2.87 2.87 0 0 1 1.51-2.5ZM12 8.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0Zm.5-.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1ZM14 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0Zm3 1a.5.5 0 0 0 1 0v-5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.8l-2.15 2.15a.5.5 0 0 0 .7.7L17 3.71V7.5Z"></path></svg></fluent-button>	
+					<fluent-button id="invite-to-meeting" title="Move this call to a video conference" class="call-action" appearance="neutral"><svg fill="#AAA" aria-hidden="true" width="2em" height="2em" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M13 6.5A2.5 2.5 0 0 0 10.5 4h-6A2.5 2.5 0 0 0 2 6.5v7A2.5 2.5 0 0 0 4.5 16h6a2.5 2.5 0 0 0 2.5-2.5v-7Zm1 1.43v4.15l2.76 2.35a.75.75 0 0 0 1.24-.57V6.2a.75.75 0 0 0-1.23-.57L14 7.93Z"></path></svg></fluent-button>	
+				</td>
+				<td rowspan=2>
+					<fluent-button id="dial-pad" appearance="stealth">
+						<table>
+							<tr>
+								<td grid-column=1><fluent-button id="dial-pad-1" appearance="neutral">1</fluent-button></td>
+								<td grid-column=2><fluent-button id="dial-pad-2" appearance="neutral">2</fluent-button></td>
+								<td grid-column=3><fluent-button id="dial-pad-3" appearance="neutral">3</fluent-button></td>						
+							</tr>
+							<tr>
+								<td grid-column=1><fluent-button id="dial-pad-4" appearance="neutral">4</fluent-button></td>
+								<td grid-column=2><fluent-button id="dial-pad-5" appearance="neutral">5</fluent-button></td>
+								<td grid-column=3><fluent-button id="dial-pad-6" appearance="neutral">6</fluent-button></td>						
+							</tr>	
+							<tr>
+								<td grid-column=1><fluent-button id="dial-pad-7" appearance="neutral">7</fluent-button></td>
+								<td grid-column=2><fluent-button id="dial-pad-8" appearance="neutral">8</fluent-button></td>
+								<td grid-column=3><fluent-button id="dial-pad-9" appearance="neutral">9</fluent-button></td>						
+							</tr>	
+							<tr>
+								<td grid-column=1><fluent-button id="dial-pad-a" appearance="neutral">*</fluent-button></td>
+								<td grid-column=2><fluent-button id="dial-pad-b" appearance="neutral">0</fluent-button></td>
+								<td grid-column=3><fluent-button id="dial-pad-c" appearance="neutral">#</fluent-button></td>						
+							</tr>					
+						</table>
+					</fluent-button>
+				</td>
+				</tr>
+				<tr><td>				
+					<mgt-people-picker id="call-people-picker" style="width: 300px" type="user" placeholder="Type a name or email address" show-max=10 selection-mode="single"></mgt-people-picker>
+				</td></tr>
+				</table>
+<!--
+				<fluent-button id="start-sharing" title="Start a sharing session" class="call-action" appearance="neutral"><svg fill="#AAA" aria-hidden="true" width="2em" height="2em" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="svg" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v8c0 1.1.9 2 2 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm6 10a.5.5 0 01-.5-.5V7.7L7.85 9.36a.5.5 0 11-.7-.7l2.5-2.5c.2-.2.5-.2.7 0l2.5 2.5a.5.5 0 01-.7.7L10.5 7.71v5.79a.5.5 0 01-.5.5z"></path></svg></fluent-button>			
+-->
+			</div>
+        </div>
+		<div id="clocktext" style="display: none; position: absolute; top: 20px; left: 300px; z-index: 100; font-weight: 300; font-size: 18px; text-align: left; color: #000;   opacity: .80; text-shadow: 0px 0px 1px rgba(0,0,0,0.3),0px 1px 1px rgba(0,0,0,0.3),1px 0px 1px rgba(0,0,0,0.3),0px 0px 1px rgba(0,0,0,0.3)"></div>		
+        </div>    
+		<div class="body">
+		
+		<fluent-tabs>
+			<fluent-tab id="activeCall">Active Call</fluent-tab>		
+			<fluent-tab id="clientInfo">Client Info</fluent-tab>
+			<fluent-tab id="aiAssistant">AI Assistant</fluent-tab>
+			<fluent-tab id="callCaptions">Transcription</fluent-tab>				
+			<fluent-tab-panel id="activeCallPanel">
+			<div>
+				<div class="notes-section">
+					<div><span class="auto-generated-notes">Auto Generated Notes</span><fluent-button class="save-notes" appearance="accent">Save</fluent-button></div>
+					<textarea id="autoGeneratedNotes" name="autoGeneratedNotes" rows="10" cols="50">
+Discussed new grandchild (Jeffrey) born this month.
+Interested in establishing a 529 college saving account, and funding this account from excess cash.
+Reminder to discuss in the future further changes to estate planning.					
+					</textarea>				
+				</div>
+					
+				<div class="action-list">
+					<h2>Action List</h2>
+					<label><input type="checkbox" checked>Update Client Goals</label>
+					<label><input type="checkbox">Share 529 Content</label>
+					<label><input type="checkbox">Create 529 Pack</label>
+					<label><input type="checkbox" checked>Share with Team</label>
+				</div>
+			</div>
+			</fluent-tab-panel>	
+			<fluent-tab-panel id="clientInfoPanel">
+			<div>
+				<div id="charts">
+					<img width="480px" src="./assets/pie_chart.png" alt="Pie Chart">
+				</div>
+				
+				<div>
+				<a href="http://localhost/"><b>Recent Email</b></a><br/>Email Notes from January 14th call with Bob and Julie<br/><br />
+				<a href="http://localhost/"><b>Recent Note</b></a><br />Call Notes from update of asset allocation<br /><br />
+				<a href="http://localhost/"><b>Recent Call</b></a><br />Recent Call to discuss 2024 plans<br /><br />
+				</div>
+				</p>   
+
+				<div>
+					<fluent-button id="open-workstation">Open Client Workstation</fluent-button>
+				</div>			
+			</div>
+			</fluent-tab-panel>
+			<fluent-tab-panel id="aiAssistantPanel">
+			<div>
+				<fluent-anchor href="#" appearance="stealth"><b>Based on the topic "Future cost of College" I've found the following content:</b></fluent-anchor>			
+				  <fluent-button>Update Client Goals with new College Saving milestone</fluent-button><p/>
+				  <fluent-button>Offer prepaid tuition plans</fluent-button><p/>
+				  <fluent-button>Offer education savings plans.</fluent-button><p/>
+				  <fluent-text-area id="assist-text" placeholder="Get Help with something else. Type a prompt for AI Assistant" appearance="outline" rows="10" resize="vertical"></fluent-text-area><p/>				  
+				  <fluent-button id="assist-button" appearance="neutral">Assist</fluent-button><p/>				  				
+			</div>			
+			</fluent-tab-panel>
+			<fluent-tab-panel id="callCaptionsPanel">
+			<div>
+				<div class="call-transcription">
+					<div><span class="call-transcription-header">Auto Generated Notes</span><fluent-button class="summarise-transcript" appearance="accent">Summarise</fluent-button></div>				
+					<fluent-tabs id="tabTranscription" activeid="liveScript">	
+						<fluent-tab id="liveScript">Conversation</fluent-tab>	
+						<fluent-tab id="summaryActions">Actions</fluent-tab>							
+						<fluent-tab id="summaryScript">Summary</fluent-tab>						
+						<fluent-tab-panel id="liveScriptPanel">					
+							<div>
+								<fluent-card id="formattedTranscription"></fluent-card>							
+								<fluent-text-area style="display:none;" id="liveTranscription" appearance="outline" rows="16" resize="vertical"></fluent-text-area>
+							</div>
+						</fluent-tab-panel>
+						<fluent-tab-panel id="summaryActionsPanel">					
+							<div>
+								<fluent-card id="actionsList"></fluent-card>							
+							</div>
+						</fluent-tab-panel>						
+						<fluent-tab-panel id="summaryScriptPanel">					
+							<div><fluent-text-area id="summaryTranscription" placeholder="Conversation summary should appear here" appearance="outline" rows="16" resize="vertical"></fluent-text-area></div>  
+						</fluent-tab-panel>						
+					</fluent-tabs>						
+				</div>
+			</div>
+			</fluent-tab-panel>					
+		</fluent-tabs>	
+		<div class="button-group">
+			<fluent-button class="internal-collab" appearance="accent">Internal Collaboration</fluent-button>
+		</div>
+		<div class="button-group">
+			<fluent-button class="call-options" appearance="accent">Call Options</fluent-button>			
+			<fluent-button class="clear-cache" appearance="neutral">Clear Cache</fluent-button>			
+			<fluent-button class="end-call">End Call</fluent-button>
+		</div>
+		<div>
+			<fluent-switch checked id="transcript-indicator">
+			  <span slot="checked-message">On</span>
+			  <span slot="unchecked-message">Off</span>
+			  <label for="cap-switch">Auto-note Capture</label>
+			</fluent-switch>		
+		</div>		
+    </div>
+	</div>
+	<div style="display:none" class="call-search">
+		<mgt-people-picker id="search-people-picker" show-max=10 selection-mode="single"></mgt-people-picker>	
+	</div>
+</body>
+</html>
