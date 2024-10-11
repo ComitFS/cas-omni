@@ -35,8 +35,9 @@ window.addEventListener("load", async () =>  {
 		console.log("setup", origin, authorization);
 							
 		document.querySelector("button").addEventListener("click", async (evt) => {	
-			const url2 = origin + "/plugins/casapi/v1/companion/meeting/client/jjgartland?subject=Call%20Dect%20Phone&destination=%2B441634251467";			
-			const response3 = await fetch(url2, {method: "POST", headers: {authorization}});
+			const body = "Calling Client";
+			const url2 = origin + "/plugins/casapi/v1/companion/meeting/client/%2B441634251467";			
+			const response3 = await fetch(url2, {method: "POST", headers: {authorization}, body});
 			joinWebUrl = await response3.text();
 		
 			microsoftTeams.executeDeepLink(joinWebUrl);
