@@ -15,7 +15,7 @@ window.addEventListener("load", async () =>  {
 	const context = await microsoftTeams.app.getContext();	
 	
 	microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
-		const url = "https://comitfs.github.io/cas-omni/companion/active-call";	
+		const url = "https://comitfs.github.io/cas-omni/companion/active-call/";	
 		
 		const configPromise = microsoftTeams.pages.config.setConfig({
 			websiteUrl: url,
