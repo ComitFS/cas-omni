@@ -16,23 +16,23 @@ function loadJS(name) {
 	
 function setSetting(name, value) {
     console.debug("setSetting", name, value);
-    window.localStorage[name] = JSON.stringify(value);
+    window.localStorage["configuration." + name] = JSON.stringify(value);
 }
 
 function setDefaultSetting(name, defaultValue) {
-    console.debug("setDefaultSetting", name, defaultValue, window.localStorage[name]);
+    console.debug("setDefaultSetting", name, defaultValue, window.localStorage["configuration." + name]);
 
-    if (!window.localStorage[name] && window.localStorage[name] != false)
+    if (!window.localStorage["configuration." + name] && window.localStorage["configuration." + name] != false)
     {
-        if (defaultValue) window.localStorage[name] = JSON.stringify(defaultValue);
+        if (defaultValue) window.localStorage["configuration." + name] = JSON.stringify(defaultValue);
     }
 }
 
 function getSetting(name, defaultValue) {
      var value = defaultValue ? defaultValue : null;
 
-    if (window.localStorage[name] && window.localStorage[name] != "undefined") {
-        value = JSON.parse(window.localStorage[name]);
+    if (window.localStorage["configuration." + name] && window.localStorage["configuration." + name] != "undefined") {
+        value = JSON.parse(window.localStorage["configuration." + name]);
     }
     return value;
 }
