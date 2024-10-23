@@ -3,25 +3,26 @@ import { TemplateHelper, registerMgtComponents, Providers, Msal2Provider, Simple
 let graphClient, embeded, callType, callId, callView, clientId, searchView, viewClient, selectedContact, telCache, currentCli, currentEmail, muteMic, holdCall, transferCall, inviteUser, inviteToMeeting, acceptCall, declineCall, endCall, returnCall, requestToJoin, nextCall, acceptSuggestion, declineSuggestion, internalCollab, clearCache, assistButton, assistText, callOptions, callControls, saveNotes, oneNoteId, oneNoteUrl, summariseTranscript, liveTranscription, meEmail, contactPhoto, mePhoto;
 						
 window.addEventListener("load", function() {
+	let json;
 	const data = urlParam("data");
 	console.debug("load", data);
 	
 	if (data) {
-		const json = JSON.parse(data)
-		setup(json);
-		Providers.globalProvider = new SimpleProvider(getAccessToken, login, logout);	
-		Providers.globalProvider.login();
+		json = JSON.parse(data)
 	
 	} else {
-		
-		/*chrome.runtime.sendMessage({action: "get_call_status"}, (response) => {
-			console.debug("load response", response);
-			setup(response);
-			Providers.globalProvider = new SimpleProvider(getAccessToken, login, logout);	
-			Providers.globalProvider.login();			
-		});*/
-	}		
-	
+		json = {
+			action: "display_contact",		
+			type: "outgoing",
+			id: "1234567890",
+			callerId: "+441634251467",	
+			emailAddress: "dele@4ng.net"
+		}
+	}
+
+	setup(json);
+	Providers.globalProvider = new SimpleProvider(getAccessToken, login, logout);	
+	Providers.globalProvider.login();	
 });
 
 window.addEventListener("unload", function() {
