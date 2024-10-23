@@ -14,12 +14,12 @@ window.addEventListener("load", function() {
 	
 	} else {
 		
-		// chrome.runtime.sendMessage({action: "get_call_status"}, (response) => {
+		/*chrome.runtime.sendMessage({action: "get_call_status"}, (response) => {
 			console.debug("load response", response);
 			setup(response);
 			Providers.globalProvider = new SimpleProvider(getAccessToken, login, logout);	
 			Providers.globalProvider.login();			
-		});
+		});*/
 	}		
 	
 });
@@ -29,11 +29,11 @@ window.addEventListener("unload", function() {
 });
 
 /*
-// chrome.runtime.onMessage.addListener(async (msg) => {	
-	console.debug("// chrome.runtime.onMessage", msg);	
+chrome.runtime.onMessage.addListener(async (msg) => {	
+	console.debug("chrome.runtime.onMessage", msg);	
 	
 	if (getSetting("cas_use_active_call_control", true)) {	
-		//// chrome.runtime.sendMessage({action: "set_presence_dnd"});
+		//chrome.runtime.sendMessage({action: "set_presence_dnd"});
 	}
 			
 	switch (msg.action) {
@@ -273,7 +273,7 @@ function setup(data) {
 		
 		endCall.addEventListener("click", (evt) => {
 			// chrome.runtime.sendMessage({action: "hangup_call", id: callId});
-			setTimeout(() => // chrome.runtime.sendMessage({action: "set_presence_dnd"}), 3000);	
+			//setTimeout(() => chrome.runtime.sendMessage({action: "set_presence_dnd"}), 3000);	
 		})
 
 		muteMic.addEventListener("click", (evt) => 
@@ -507,7 +507,7 @@ function handleConnectedCall(data) {
 	changeCallPresence("InACall", "Busy");
 	
 	if (clockText?.style.display == "none") {	
-		data.extnId = // chrome.runtime.id;
+		//data.extnId = chrome.runtime.id;
 		data.callerId = currentCli;
 		data.emailAddress = currentEmail;
 		data.embedInWorkstation = getSetting("cas_embed_in_workstation", false) || getSetting("cas_embed_in_teams", false);
