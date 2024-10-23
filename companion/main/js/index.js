@@ -14,7 +14,7 @@ window.addEventListener("load", function() {
 	
 	} else {
 		
-		chrome.runtime.sendMessage({action: "get_call_status"}, (response) => {
+		// chrome.runtime.sendMessage({action: "get_call_status"}, (response) => {
 			console.debug("load response", response);
 			setup(response);
 			Providers.globalProvider = new SimpleProvider(getAccessToken, login, logout);	
@@ -28,11 +28,12 @@ window.addEventListener("unload", function() {
 	
 });
 
-chrome.runtime.onMessage.addListener(async (msg) => {	
-	console.debug("chrome.runtime.onMessage", msg);	
+/*
+// chrome.runtime.onMessage.addListener(async (msg) => {	
+	console.debug("// chrome.runtime.onMessage", msg);	
 	
 	if (getSetting("cas_use_active_call_control", true)) {	
-		//chrome.runtime.sendMessage({action: "set_presence_dnd"});
+		//// chrome.runtime.sendMessage({action: "set_presence_dnd"});
 	}
 			
 	switch (msg.action) {
@@ -81,6 +82,7 @@ chrome.runtime.onMessage.addListener(async (msg) => {
 			break;
 	}
 })
+*/
 
 function setup(data) {
 	console.debug("setup", data); 
@@ -143,7 +145,7 @@ function setup(data) {
 	nextCall = document.querySelector("#make-next-call");	
 
 	nextCall.addEventListener("click", (evt) => {
-		chrome.runtime.sendMessage({action: "make_next_call"});	
+		// chrome.runtime.sendMessage({action: "make_next_call"});	
 		//window.close();
 	});
 	
@@ -162,7 +164,7 @@ function setup(data) {
 	requestToJoin = document.querySelector("#request-join-call");
 	
 	returnCall.addEventListener("click", (evt) => {
-		chrome.runtime.sendMessage({action: "make_call", destination: data.callerId});
+		// chrome.runtime.sendMessage({action: "make_call", destination: data.callerId});
 		returnCall.style.display = "none";	
 		endCall.style.display = "none";	
 		saveNotes.style.display = "";	
@@ -200,7 +202,7 @@ function setup(data) {
 	
 	internalCollab.addEventListener("click", () => {
 		const chatId = getSetting("cas_active_call_thread_id", "19:83ec482c-3bc5-4116-acee-e081cc720630_ba9e081a-5748-40ca-8fd5-ab9c74dae3d1@unq.gbl.spaces")
-		chrome.runtime.sendMessage({action: "open_mgt_chat", url: getSetting("cas_server_url") + "/teams/mgt-chat/?chatId=" + chatId });
+		// chrome.runtime.sendMessage({action: "open_mgt_chat", url: getSetting("cas_server_url") + "/teams/mgt-chat/?chatId=" + chatId });
 	});	
 	
 	assistButton.addEventListener("click", async (evt) => {
@@ -250,11 +252,11 @@ function setup(data) {
 		saveNotes.style.display = "none";
 		
 		acceptCall.addEventListener("click", (evt) => {
-			chrome.runtime.sendMessage({action: "accept_call", id: callId});
+			// chrome.runtime.sendMessage({action: "accept_call", id: callId});
 		})
 		
 		declineCall.addEventListener("click", (evt) => {
-			chrome.runtime.sendMessage({action: "reject_call", id: callId});
+			// chrome.runtime.sendMessage({action: "reject_call", id: callId});
 		})
 
 		saveNotes.addEventListener("click", async (evt) => {
@@ -270,18 +272,18 @@ function setup(data) {
 		});
 		
 		endCall.addEventListener("click", (evt) => {
-			chrome.runtime.sendMessage({action: "hangup_call", id: callId});
-			setTimeout(() => chrome.runtime.sendMessage({action: "set_presence_dnd"}), 3000);	
+			// chrome.runtime.sendMessage({action: "hangup_call", id: callId});
+			setTimeout(() => // chrome.runtime.sendMessage({action: "set_presence_dnd"}), 3000);	
 		})
 
 		muteMic.addEventListener("click", (evt) => 
 		{
 			if (clientId.classList.contains("call-muted")) {					
-				chrome.runtime.sendMessage({action: "unmute_call", id: callId});	
+				// chrome.runtime.sendMessage({action: "unmute_call", id: callId});	
 				clientId.classList.remove("call-muted");
 				clientId.classList.add("call-connected");				
 			} else {
-				chrome.runtime.sendMessage({action: "mute_call", id: callId});
+				// chrome.runtime.sendMessage({action: "mute_call", id: callId});
 				clientId.classList.remove("call-connected");				
 				clientId.classList.add("call-muted");
 				
@@ -291,9 +293,9 @@ function setup(data) {
 		holdCall.addEventListener("click", (evt) => 
 		{
 			if (clientId.classList.contains("call-held")) {
-				chrome.runtime.sendMessage({action: "resume_call", id: callId});				
+				// chrome.runtime.sendMessage({action: "resume_call", id: callId});				
 			} else {
-				chrome.runtime.sendMessage({action: "hold_call", id: callId});
+				// chrome.runtime.sendMessage({action: "hold_call", id: callId});
 			}
 		})
 		
@@ -305,7 +307,7 @@ function setup(data) {
 				let destination = getDestination(person);
 
 				if (destination) {
-					chrome.runtime.sendMessage({action: "transfer_call", id: callId, destination});				
+					// chrome.runtime.sendMessage({action: "transfer_call", id: callId, destination});				
 				} else {
 					alert("Unable to transfer, target is not an organization user or has no telephone number");
 				}				
@@ -314,7 +316,7 @@ function setup(data) {
 				
 				if (destination.length > 0) {	
 					console.debug("input", destination); 
-					chrome.runtime.sendMessage({action: "transfer_call", id: callId, destination});					
+					// chrome.runtime.sendMessage({action: "transfer_call", id: callId, destination});					
 				} else { 
 					alert("Unable to transfer call, target has not been selected or input provided");
 				}
@@ -329,7 +331,7 @@ function setup(data) {
 				let destination = getDestination(person);
 
 				if (destination) {
-					chrome.runtime.sendMessage({action: "add_third_party", id: callId, destination});
+					// chrome.runtime.sendMessage({action: "add_third_party", id: callId, destination});
 				} else {
 					alert("Unable to add participant to call, target is not an organization user or has no telephone number");
 				}
@@ -339,7 +341,7 @@ function setup(data) {
 				
 				if (destination.length > 0) {	
 					console.debug("input", destination); 
-					chrome.runtime.sendMessage({action: "add_third_party", id: callId, destination});					
+					// chrome.runtime.sendMessage({action: "add_third_party", id: callId, destination});					
 				} else { 
 					alert("Unable to add participant to call, target has not been selected or input provided");
 				}
@@ -505,7 +507,7 @@ function handleConnectedCall(data) {
 	changeCallPresence("InACall", "Busy");
 	
 	if (clockText?.style.display == "none") {	
-		data.extnId = chrome.runtime.id;
+		data.extnId = // chrome.runtime.id;
 		data.callerId = currentCli;
 		data.emailAddress = currentEmail;
 		data.embedInWorkstation = getSetting("cas_embed_in_workstation", false) || getSetting("cas_embed_in_teams", false);
@@ -582,7 +584,7 @@ function handleSharedActiveCall(data) {
 		
 		data.request.features.callerName = callerName;
 		data.contextMessage = "Client " + callerName + " started a call with FA " + data.request.features.calledName;
-		chrome.runtime.sendMessage({action: "show_shared_active_call",  data});		
+		// chrome.runtime.sendMessage({action: "show_shared_active_call",  data});		
 	}
 }
 
@@ -623,6 +625,7 @@ function doSearch() {
 function openBrowserTab(url) {
 	console.debug("openBrowserTab", url);
 	
+	/*
 	chrome.tabs.query({}, (tabs) =>	{
 		let workstationTab;
 		
@@ -641,6 +644,7 @@ function openBrowserTab(url) {
 			}
 		}
 	});
+	*/
 }
 
 function sendMessageToWorkstation(data) {
@@ -648,12 +652,12 @@ function sendMessageToWorkstation(data) {
 	console.debug("sendMessageToWorkstation", tabId, data);
 	
 	if (tabId) {
-		chrome.tabs.sendMessage(parseInt(tabId), data, {}, function(response) 
+		/*chrome.tabs.sendMessage(parseInt(tabId), data, {}, function(response) 
 		{
 			if (response) {
 				console.debug("sendMessageToWorkstation response", response);
 			}
-		});
+		});*/
 	}
 }
 
@@ -837,7 +841,7 @@ async function sendWhatsAppInvite(data, meetingLink) {
 
 async function joinMeeting(key, emails, name, data) {	
 	// don't current hangup. wiat for use to end call
-	//chrome.runtime.sendMessage({action: "hangup_call", id: callId});
+	//// chrome.runtime.sendMessage({action: "hangup_call", id: callId});
 	
 	const address = await getMeetingLink(key);	
 	const action = "join_meeting";			
@@ -845,7 +849,7 @@ async function joinMeeting(key, emails, name, data) {
 	const token = getSetting('cas_access_token');
 	const userId = { microsoftTeamsUserId: getSetting('cas_endpoint_address')};	
 	const displayName = getSetting('cas_endpoint_name');	
-	chrome.runtime.sendMessage({key, action,  data: {locator, displayName, userId, token}});
+	// chrome.runtime.sendMessage({key, action,  data: {locator, displayName, userId, token}});
 
 	const body = `Hi ${name},\n\nPlease join meeting at ${address}\n\n${getSetting('cas_endpoint_name')}`;
 	const subject = "Online Meeting with " + getSetting('cas_endpoint_name')
@@ -952,7 +956,7 @@ function handleCaption(msg) {
 			
 			if (keyword == "invite " + delegateName) {
 				const destination = getSetting("cas_delegate_userid", "ba9e081a-5748-40ca-8fd5-ab9c74dae3d1");				
-				chrome.runtime.sendMessage({action: "add_third_party", id: callId, destination});
+				// chrome.runtime.sendMessage({action: "add_third_party", id: callId, destination});
 			}
 			else {
 				
