@@ -1016,10 +1016,6 @@ async function fetchPhotos() {
 }
 
 function getPath() {
-	let url =  "/teams/api/openlink";
-	
-	if (getSetting("cas_paas_enabled")) {
-		url =  "/plugins/casapi/v1/companion";
-	}
+	let url =  "/plugins/casapi/v1/companion";
 	return url;
 }
