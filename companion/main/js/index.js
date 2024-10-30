@@ -5,7 +5,8 @@ let graphClient, embeded, callType, callId, callView, clientId, searchView, view
 window.addEventListener("load", function() {
 	let json;
 	const data = urlParam("data");
-	console.debug("load", data);
+	const userid = urlParam("userid");	
+	console.debug("load", userid, data);
 	
 	if (data) {
 		json = JSON.parse(data)

@@ -22,8 +22,8 @@ window.addEventListener("load", async () =>  {
 
 		microsoftTeams.getContext(async context => {
 			microsoftTeams.appInitialization.notifySuccess();
-			console.log("cas companion logged in user", context, context.subEntityId);
-			setup();
+			console.log("cas companion logged in user", context.userObjectId, context.subEntityId, context);
+			setup(context.userObjectId);
 		});
 
 		microsoftTeams.registerOnThemeChangeHandler(function (theme) {
@@ -31,8 +31,9 @@ window.addEventListener("load", async () =>  {
 		});	
 	}
 
-	function setup() {
-		console.log("setup", origin, authorization);
+	function setup(userid) {
+		console.log("setup", origin, authorization, userid);
+		document.getElementById("cas-top-page").src = "../main/index.html?userid=" + userid;
 							
 		document.querySelector("button").addEventListener("click", async (evt) => {	
 			const body = "Calling Client";
