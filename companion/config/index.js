@@ -12,7 +12,8 @@ window.addEventListener("load", async () =>  {
 	}; 	
 	
     await microsoftTeams.app.initialize();	
-	const context = await microsoftTeams.app.getContext();	
+	const context = await microsoftTeams.app.getContext();
+    console.debug("cas-companion-side-panel", context);	
 	
 	microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
 		const url = "https://comitfs.github.io/cas-omni/companion/active-call/";	
