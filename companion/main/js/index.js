@@ -14,7 +14,7 @@ window.addEventListener("load", async function() {
 	} else {
 		const origin = JSON.parse(localStorage.getItem("configuration.cas_server_url"));
 		const authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));
-		const url = origin + "/plugins/casapi/v1/ompanion/meeting/adviser";			
+		const url = origin + "/plugins/casapi/v1/companion/meeting/adviser";			
 		const response = await fetch(url, {method: "GET", headers: {authorization}});
 		const meetingJson = await response.json();
 
