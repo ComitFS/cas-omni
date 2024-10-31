@@ -31,7 +31,7 @@ window.addEventListener("load", async function() {
 			json = {
 				action: "display_contact",		
 				type: "outgoing",
-				id:meetingJson.cas_contact. "1234567890",
+				id: "1234567890",
 				callerId: "+441634251467",	
 				emailAddress: "dele@4ng.net"
 			}
