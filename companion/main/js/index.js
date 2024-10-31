@@ -2,7 +2,7 @@ import { TemplateHelper, registerMgtComponents, Providers, Msal2Provider, Simple
 
 let graphClient, embeded, callType, callId, callView, clientId, searchView, viewClient, selectedContact, telCache, currentCli, currentEmail, muteMic, holdCall, transferCall, inviteUser, inviteToMeeting, acceptCall, declineCall, endCall, returnCall, requestToJoin, nextCall, acceptSuggestion, declineSuggestion, internalCollab, clearCache, assistButton, assistText, callOptions, callControls, saveNotes, oneNoteId, oneNoteUrl, summariseTranscript, liveTranscription, meEmail, contactPhoto, mePhoto;
 						
-window.addEventListener("load", function() {
+window.addEventListener("load", async function() {
 	let json;
 	const data = urlParam("data");
 	const userid = urlParam("userid");	
@@ -12,12 +12,29 @@ window.addEventListener("load", function() {
 		json = JSON.parse(data)
 	
 	} else {
-		json = {
-			action: "display_contact",		
-			type: "outgoing",
-			id: "1234567890",
-			callerId: "+441634251467",	
-			emailAddress: "dele@4ng.net"
+		const origin = JSON.parse(localStorage.getItem("configuration.cas_server_url"));
+		const authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));
+		const url = origin + "/plugins/casapi/v1/ompanion/meeting/adviser";			
+		const response = await fetch(url, {method: "GET", headers: {authorization}});
+		const meetingJson = await response.json();
+
+		if (meetingJson.cas_contact) {
+			json = {
+				action: "display_contact",		
+				type: meetingJson.cas_contact.incoming ? "incoming" : "outgoing",
+				id: meetingJson.cas_contact.callId,
+				callerId: meetingJson.cas_contact.phone,	
+				emailAddress: meetingJson.cas_contact.email
+			}
+			
+		} else {
+			json = {
+				action: "display_contact",		
+				type: "outgoing",
+				id:meetingJson.cas_contact. "1234567890",
+				callerId: "+441634251467",	
+				emailAddress: "dele@4ng.net"
+			}
 		}
 	}
 
