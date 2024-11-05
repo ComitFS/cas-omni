@@ -17,8 +17,25 @@ window.addEventListener("load", async function() {
 		const url = origin + "/plugins/casapi/v1/companion/meeting/adviser";			
 		const response = await fetch(url, {method: "GET", headers: {authorization}});
 		const meetingJson = await response.json();
+		
+		/*
+		 "cas_contact": {
+			"callId": "22005580-a748-499e-96ef-1b02242befe7",
+			"incoming": true,
+			"mobilePhone": "+441634251467",
+			"phone": "+441634251467",
+			"joinWebUrl": "https://teams.microsoft.com/l/meetup-join/19%3ameeting_MDg2M2EyMWQtZjBiMS00MjE0LTg4OGMtZTRjNWQyMGI1NGI1%40thread.v2/0?context=%7b%22Tid%22%3a%22a83ec96f-82b0-456e-90a2-a6ba1ce7fc4e%22%2c%22Oid%22%3a%2283ec482c-3bc5-4116-acee-e081cc720630%22%7d",
+			"adviserId": "83ec482c-3bc5-4116-acee-e081cc720630",
+			"name": "J Gartland",
+			"id": "38564418",
+			"adviser": "dele",
+			"email": "dele@4ng.net"
+		  }
+		*/		
 
 		if (meetingJson.cas_contact) {
+			setupACS(origin, userid, authorization);
+			
 			json = {
 				action: "display_contact",		
 				type: meetingJson.cas_contact.incoming ? "incoming" : "outgoing",
@@ -46,6 +63,22 @@ window.addEventListener("load", async function() {
 window.addEventListener("unload", function() {
 	
 });
+
+async function setupACS(origin, userid, authorization) {
+	console.debug("setupACS", origin, userid, authorization);
+	
+	const url = origin +  + "/plugins/casapi/v1/companion/config/global";			
+	const response = await fetch(url, {method: "GET", headers: {authorization}});
+	const config = await response.json();				
+	const client = new ACS.CommunicationIdentityClient(config.acs_endpoint);	
+	
+	const url2 = origin + "/plugins/casapi/v1/companion/msal/token";				
+	const resp = await fetch(url2, {method: "GET", headers: {authorization}});	
+	const json = await resp.json();	
+	const response2 = await client.getTokenForTeamsUser({teamsUserAadToken: json.access_token, clientId: config.client_id, userObjectId: userid});		
+	const token = response2.token;	
+	console.debug("setupACS - Teams user token", token);		
+}
 
 /*
 chrome.runtime.onMessage.addListener(async (msg) => {	
