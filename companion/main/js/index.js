@@ -1,6 +1,6 @@
 import { TemplateHelper, registerMgtComponents, Providers, Msal2Provider, SimpleProvider, ProviderState } from './mgt.js';
 
-let graphClient, embeded, callType, callId, callView, clientId, searchView, viewClient, selectedContact, telCache, currentCli, currentEmail, muteMic, holdCall, transferCall, inviteUser, inviteToMeeting, acceptCall, declineCall, endCall, returnCall, requestToJoin, nextCall, acceptSuggestion, declineSuggestion, internalCollab, clearCache, assistButton, assistText, callOptions, callControls, saveNotes, oneNoteId, oneNoteUrl, summariseTranscript, liveTranscription, meEmail, contactPhoto, mePhoto;
+let graphClient, callAgent, embeded, callType, callId, callView, clientId, searchView, viewClient, selectedContact, telCache, currentCli, currentEmail, muteMic, holdCall, transferCall, inviteUser, inviteToMeeting, acceptCall, declineCall, endCall, returnCall, requestToJoin, nextCall, acceptSuggestion, declineSuggestion, internalCollab, clearCache, assistButton, assistText, callOptions, callControls, saveNotes, oneNoteId, oneNoteUrl, summariseTranscript, liveTranscription, meEmail, contactPhoto, mePhoto;
 						
 window.addEventListener("load", async function() {
 	let json;
@@ -34,8 +34,9 @@ window.addEventListener("load", async function() {
 		*/		
 
 		if (meetingJson.cas_contact) {
-			setupACS(origin, userid, authorization);
-			
+			await setupACS(origin, userid, authorization);
+			const call = await callAgent.join({ meetingLink: meetingJson.joinWebUrl});
+		
 			json = {
 				action: "display_contact",		
 				type: meetingJson.cas_contact.incoming ? "incoming" : "outgoing",
@@ -67,17 +68,35 @@ window.addEventListener("unload", function() {
 async function setupACS(origin, userid, authorization) {
 	console.debug("setupACS", origin, userid, authorization);
 	
-	const url = origin + "/plugins/casapi/v1/companion/config/global";			
-	const response = await fetch(url, {method: "GET", headers: {authorization}});
-	const config = await response.json();				
-	const client = new ACS.CommunicationIdentityClient(config.acs_endpoint);	
+	function fetchTokenFromServerForUser() {
+		const url = origin + "/plugins/casapi/v1/companion/config/global";			
+		const response = await fetch(url, {method: "GET", headers: {authorization}});
+		const config = await response.json();				
+		const client = new ACS.CommunicationIdentityClient(config.acs_endpoint);	
+		
+		const url2 = origin + "/plugins/casapi/v1/companion/msal/token";				
+		const resp = await fetch(url2, {method: "GET", headers: {authorization}});	
+		const json = await resp.json();	
+		const response2 = await client.getTokenForTeamsUser({teamsUserAadToken: json.access_token, clientId: config.client_id, userObjectId: userid});		
+		const token = response2.token;	
+		console.debug(fetchTokenFromServerForUser", token);
+		return token;
+	}		
+
+	const token = fetchTokenFromServerForUser();
+	const callClient = new ACS.CallClient();
+	const tokenCredential = new ACS.AzureCommunicationTokenCredential({tokenRefresher: async () => fetchTokenFromServerForUser(), token, refreshProactively: true});					
 	
-	const url2 = origin + "/plugins/casapi/v1/companion/msal/token";				
-	const resp = await fetch(url2, {method: "GET", headers: {authorization}});	
-	const json = await resp.json();	
-	const response2 = await client.getTokenForTeamsUser({teamsUserAadToken: json.access_token, clientId: config.client_id, userObjectId: userid});		
-	const token = response2.token;	
-	console.debug("setupACS - Teams user token", token);		
+	callAgent = await callClient.createTeamsCallAgent(tokenCredential);	
+
+	callAgent.on('incomingCall', async event => {
+		console.debug("incomingCall", event);
+	});	
+
+	callAgent.on('callsUpdated', event => 	{
+		console.debug("callsUpdated", event); 	
+		
+	});
 }
 
 /*
