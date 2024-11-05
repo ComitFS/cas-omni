@@ -79,7 +79,7 @@ async function setupACS(origin, userid, authorization) {
 		const json = await resp.json();	
 		const response2 = await client.getTokenForTeamsUser({teamsUserAadToken: json.access_token, clientId: config.client_id, userObjectId: userid});		
 		const token = response2.token;	
-		console.debug(fetchTokenFromServerForUser", token);
+		console.debug("fetchTokenFromServerForUser", token);
 		return token;
 	}		
 
