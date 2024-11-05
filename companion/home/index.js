@@ -21,7 +21,7 @@ window.addEventListener("load", async () =>  {
 		microsoftTeams.getContext(async context => {
 			microsoftTeams.appInitialization.notifySuccess();
 			console.log("cas companion logged in user", context, context.subEntityId, context.userObjectId);
-			document.getElementById("cas-top-page").src = origin + "/casweb/main/index.html?userid=" + context.userObjectId;		
+			document.getElementById("cas-top-page").src = "../main/index.html?userid=" + context.userObjectId;		
 		});
 
 		microsoftTeams.registerOnThemeChangeHandler(function (theme) {
