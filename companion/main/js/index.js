@@ -67,7 +67,7 @@ window.addEventListener("unload", function() {
 async function setupACS(origin, userid, authorization) {
 	console.debug("setupACS", origin, userid, authorization);
 	
-	const url = origin +  + "/plugins/casapi/v1/companion/config/global";			
+	const url = origin + "/plugins/casapi/v1/companion/config/global";			
 	const response = await fetch(url, {method: "GET", headers: {authorization}});
 	const config = await response.json();				
 	const client = new ACS.CommunicationIdentityClient(config.acs_endpoint);	
