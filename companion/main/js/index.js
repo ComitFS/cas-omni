@@ -68,7 +68,7 @@ window.addEventListener("unload", function() {
 async function setupACS(origin, userid, authorization) {
 	console.debug("setupACS", origin, userid, authorization);
 	
-	function fetchTokenFromServerForUser() {
+	async function fetchTokenFromServerForUser() {
 		const url = origin + "/plugins/casapi/v1/companion/config/global";			
 		const response = await fetch(url, {method: "GET", headers: {authorization}});
 		const config = await response.json();				
@@ -83,7 +83,7 @@ async function setupACS(origin, userid, authorization) {
 		return token;
 	}		
 
-	const token = fetchTokenFromServerForUser();
+	const token = await fetchTokenFromServerForUser();
 	const callClient = new ACS.CallClient();
 	const tokenCredential = new ACS.AzureCommunicationTokenCredential({tokenRefresher: async () => fetchTokenFromServerForUser(), token, refreshProactively: true});					
 	
