@@ -23,6 +23,8 @@ window.addEventListener("load", async () =>  {
 		microsoftTeams.getContext(async context => {
 			microsoftTeams.appInitialization.notifySuccess();
 			console.log("cas companion logged in user", context.userObjectId, context.subEntityId, context);
+			document.getElementById("cas-top-page").src = origin + "/casweb/main/index.html?userid=" + context.userObjectId;	
+			
 			setup(context.userObjectId);
 		});
 
@@ -33,7 +35,6 @@ window.addEventListener("load", async () =>  {
 
 	function setup(userid) {
 		console.log("setup", origin, authorization, userid);
-		document.getElementById("cas-top-page").src = "../main/index.html?userid=" + userid;
 							
 		document.querySelector("button").addEventListener("click", async (evt) => {	
 			const body = "Calling Client";
