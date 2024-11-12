@@ -1,4 +1,4 @@
-let userId, callAgent, calls, requests, origin, authorization;
+let userId, callClient, tokenCredential, callAgent, calls, requests, origin, authorization;
 
 window.addEventListener("unload", () => {
 	console.debug("unload");
@@ -53,8 +53,8 @@ async function setupACS(context) {
 	}		
 
 	const token = await fetchTokenFromServerForUser();
-	const callClient = new ACS.CallClient();
-	const tokenCredential = new ACS.AzureCommunicationTokenCredential({tokenRefresher: async () => fetchTokenFromServerForUser(), token, refreshProactively: true});					
+	callClient = new ACS.CallClient();
+	tokenCredential = new ACS.AzureCommunicationTokenCredential({tokenRefresher: async () => fetchTokenFromServerForUser(), token, refreshProactively: true});					
 	
 	requests = [];
 	calls = [];	
@@ -173,6 +173,11 @@ async function setupEventSource() {
 			requests[request.call_id] = request;		
 		}
 		
+		if (request.action == "testCall") {		
+			readyForBusiness();			
+		}
+		else
+			
 		if (request.action == "makeCall") 	{	
 			makeCall(request.destination, request);	
 		}
@@ -299,4 +304,74 @@ function hangupCall(id) {
 			calls[id].call.hangUp();							
 		}
 	}
+}
+
+async function readyForBusiness() {					
+	const preCallDiagnosticsResult = await callClient.feature(ACS.Features.PreCallDiagnostics).startTest(tokenCredential);
+	
+	console.debug("readyForBusiness", preCallDiagnosticsResult);	
+	
+	const browserSupport =  await preCallDiagnosticsResult.browserSupport;
+	
+	if (browserSupport) {
+		console.debug("readyForBusiness - browser", browserSupport.browser);
+		console.debug("readyForBusiness - O/S", browserSupport.os);
+	}	
+	
+	const deviceAccess =  await preCallDiagnosticsResult.deviceAccess;
+	
+	if (deviceAccess) {
+		console.debug("readyForBusiness - audio", deviceAccess.audio);
+		console.debug("readyForBusiness - video", deviceAccess.video);		
+	}
+
+	const deviceEnumeration = await preCallDiagnosticsResult.deviceEnumeration;
+	
+	if (deviceEnumeration) {
+		console.debug("readyForBusiness - microphone", deviceEnumeration.microphone);
+		console.debug("readyForBusiness - camera", deviceEnumeration.camera);
+		console.debug("readyForBusiness - speaker", deviceEnumeration.speaker);
+	}	
+	
+	const inCallDiagnostics =  await preCallDiagnosticsResult.inCallDiagnostics;
+	
+	if (inCallDiagnostics) {    
+		console.debug("readyForBusiness - connected", inCallDiagnostics.connected)
+		console.debug("readyForBusiness - bandwidth", inCallDiagnostics.bandWidth)
+		console.debug("readyForBusiness - audio diag", inCallDiagnostics.diagnostics.audio)
+		console.debug("readyForBusiness - video diag", inCallDiagnostics.diagnostics.video)
+	}
+
+	/*
+	const callMediaStatistics =  await preCallDiagnosticsResult.callMediaStatistics;
+	
+	if (callMediaStatistics) {    
+		console.debug("readyForBusiness - callMediaStatistics", callMediaStatistics);
+
+		// Undocumented - guess work		
+		const opt = {aggregationInterval: 2,  dataPointsPerAggregation: 20};
+		const mediaStatsCollector = callMediaStatistics.startCollector(opt);
+
+		mediaStatsCollector.on('mediaStatsEmitted', (mediaStats) => {
+			console.debug('readyForBusiness - media stats:', mediaStats.stats);
+			console.debug('readyForBusiness - media stats collectionInterval:', mediaStats.collectionInterval);
+			console.debug('readyForBusiness - media stats aggregationInterval:', mediaStats.aggregationInterval);
+		});		
+	}	
+	*/
+	
+	const payload = {
+		account: userId,
+		browser:  browserSupport.browser,
+		os:  browserSupport.os,
+		audio: {device: deviceAccess.audio, diagnostics: inCallDiagnostics.diagnostics.audio}, 
+		video: {device: deviceAccess.video, diagnostics: inCallDiagnostics.diagnostics.video}, 		
+		device: deviceEnumeration,		
+		connected: inCallDiagnostics.connected,
+		bandwidth: inCallDiagnostics.bandWidth		
+	};	
+	const url = origin + "/plugins/casapi/v1/companion/teststatus";		
+	const body = JSON.stringify(payload);
+	console.debug("readyForBusiness", payload);
+	const response = await fetch(url, {method: "POST", body});		
 }
