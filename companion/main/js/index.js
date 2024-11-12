@@ -1,6 +1,6 @@
 import { TemplateHelper, registerMgtComponents, Providers, Msal2Provider, SimpleProvider, ProviderState } from './mgt.js';
 
-let graphClient, callAgent, embeded, callType, callId, callView, clientId, searchView, viewClient, selectedContact, telCache, currentCli, currentEmail, muteMic, holdCall, transferCall, inviteUser, inviteToMeeting, acceptCall, declineCall, endCall, returnCall, requestToJoin, nextCall, acceptSuggestion, declineSuggestion, internalCollab, clearCache, assistButton, assistText, callOptions, callControls, saveNotes, oneNoteId, oneNoteUrl, summariseTranscript, liveTranscription, meEmail, contactPhoto, mePhoto;
+let config, meetingJson, graphClient, callAgent, callCaptionsApi, embeded, callType, callId, callView, clientId, searchView, viewClient, selectedContact, telCache, currentCli, currentEmail, muteMic, holdCall, transferCall, inviteUser, inviteToMeeting, acceptCall, declineCall, endCall, returnCall, requestToJoin, nextCall, acceptSuggestion, declineSuggestion, internalCollab, clearCache, assistButton, assistText, callOptions, callControls, saveNotes, oneNoteId, oneNoteUrl, summariseTranscript, liveTranscription, meEmail, contactPhoto, mePhoto;
 						
 window.addEventListener("load", async function() {
 	let json;
@@ -14,9 +14,14 @@ window.addEventListener("load", async function() {
 	} else {
 		const origin = JSON.parse(localStorage.getItem("configuration.cas_server_url"));
 		const authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));
-		const url = origin + "/plugins/casapi/v1/companion/meeting/adviser";			
+		
+		const url = origin + "/plugins/casapi/v1/companion/config/global";			
 		const response = await fetch(url, {method: "GET", headers: {authorization}});
-		const meetingJson = await response.json();
+		config = await response.json();	
+		
+		const url2 = origin + "/plugins/casapi/v1/companion/meeting/adviser";			
+		const response2 = await fetch(url2, {method: "GET", headers: {authorization}});
+		meetingJson = await response2.json();
 		
 		/*
 		 "cas_contact": {
@@ -68,12 +73,8 @@ window.addEventListener("unload", function() {
 async function setupACS(origin, userid, authorization) {
 	console.debug("setupACS", origin, userid, authorization);
 	
-	async function fetchTokenFromServerForUser() {
-		const url = origin + "/plugins/casapi/v1/companion/config/global";			
-		const response = await fetch(url, {method: "GET", headers: {authorization}});
-		const config = await response.json();				
-		const client = new ACS.CommunicationIdentityClient(config.acs_endpoint);	
-		
+	async function fetchTokenFromServerForUser() {			
+		const client = new ACS.CommunicationIdentityClient(config.acs_endpoint);			
 		const url2 = origin + "/plugins/casapi/v1/companion/msal/token";				
 		const resp = await fetch(url2, {method: "GET", headers: {authorization}});	
 		const json = await resp.json();	
@@ -96,8 +97,105 @@ async function setupACS(origin, userid, authorization) {
 	callAgent.on('callsUpdated', event => 	{
 		console.debug("callsUpdated", event); 	
 		
+		event.removed.forEach(removedCall => {	// happens before state change
+			console.debug("removedCall", removedCall.callEndReason, removedCall.callerInfo);				
+		})
+		
+		event.added.forEach(addedCall => {
+			console.debug("addedCall", addedCall, addedCall.callerInfo);
+			
+			addedCall.on('remoteParticipantsUpdated', e => {
+				e.added.forEach(remoteParticipant => { 
+				
+				});
+				
+				e.removed.forEach(remoteParticipant => {
+	
+				});
+			});	
+
+			addedCall.on('isScreenSharingOnChanged', () => {
+				console.debug("addedCall isScreenSharingOnChanged");
+			});
+			
+			addedCall.on('stateChanged', async () => {
+				console.debug("addedCall state", addedCall.state, addedCall.lobby, addedCall._lastTsCallMeetingDetails?.joinUrl);
+				
+				if (addedCall.state == "Connected") 
+				{	
+					if (getSetting("cas_enable_voice_transcription", true)) {
+						try {
+							let captionsCallFeature = addedCall.feature(ACS.Features.Captions);	
+							
+							if (captionsCallFeature.captions.kind === 'TeamsCaptions') {
+								callCaptionsApi = captionsCallFeature.captions;
+							}	
+
+							console.debug("startCaptions", callCaptionsApi);
+
+							if (callCaptionsApi) {											
+								callCaptionsApi.on('CaptionsReceived', captionsHandler);
+								callCaptionsApi.on('CaptionsActiveChanged', isCaptionsActiveChangedHandler);	
+								
+							
+								if (!callCaptionsApi.isCaptionsActive) {	
+									try {
+										await callCaptionsApi.startCaptions({ language: 'en-us' });
+									} catch (e) {
+										console.warn("caption error", e);										
+									}
+								}
+							}
+						} catch (e) {
+							console.warn("caption error", e);
+						}
+					}
+				}				
+			});				
+		});			
+		
 	});
 }
+
+function isCaptionsActiveChangedHandler() {
+	console.debug("isCaptionsActiveChangedHandler", callCaptionsApi);
+};
+
+function captionsHandler(captionsInfo) {
+	console.debug("captionsHandler", captionsInfo);
+	const captionText = captionsInfo.captionText;
+
+	let speakerName = config.name;
+	let me = true;
+
+	if (captionsInfo.speaker.identifier?.phoneNumber) {
+		const phoneNumber = captionsInfo.speaker.identifier.phoneNumber;
+		
+		if (meetingJson?.cas_contact.name) {
+			speakerName = meetingJson.cas_contact.name;
+			me = false;
+		}
+	}
+	else 
+		
+	if (captionsInfo.speaker.displayName) {
+		speakerName = captionsInfo.speaker.displayName;
+		me = false;		
+	}
+	
+	if (speakerName && captionsInfo.resultType == "Final") 	{		
+		console.debug("captionsHandler", speakerName, captionText);
+
+		const data = {
+			action: "notify_caption",
+			speakerName,
+			captionText,
+			me
+		};
+				
+		handleCaption(data);			
+	}
+};
 
 /*
 chrome.runtime.onMessage.addListener(async (msg) => {	
@@ -146,10 +244,6 @@ chrome.runtime.onMessage.addListener(async (msg) => {
 			
 		case "notify_cas_dialer_disconnected":
 			handleDisconnectedCall(msg);			
-			break;
-			
-		case "notify_caption":
-			handleCaption(msg);			
 			break;
 	}
 })
