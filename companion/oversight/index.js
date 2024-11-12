@@ -1,4 +1,4 @@
-let userId, identityClient, callAgent, calls, requests, origin, authorization;
+let userId, identityClient, callAgent, calls, requests, origin, authorization, testLog;
 
 window.addEventListener("unload", () => {
 	console.debug("unload");
@@ -40,6 +40,8 @@ async function setupACS(context) {
 	config = await response.json();	
 	
 	console.debug("setupACS", config, origin, userId, authorization);
+	testLog = document.getElementById("test-log");
+	testLog.innerHTML = "";	
 	
 	async function fetchTokenFromServerForUser() {			
 		identityClient = new ACS.CommunicationIdentityClient(config.acs_endpoint);			
@@ -53,12 +55,15 @@ async function setupACS(context) {
 	}		
 
 	const token = await fetchTokenFromServerForUser();
+	logData("Fetched access token from CAS Server");
+	
 	const callClient = new ACS.CallClient();
 	const tokenCredential = new ACS.AzureCommunicationTokenCredential({tokenRefresher: async () => fetchTokenFromServerForUser(), token, refreshProactively: true});					
 	
 	requests = [];
 	calls = [];	
 	callAgent = await callClient.createTeamsCallAgent(tokenCredential);	
+	logData("Created ACS CallAgent");	
 
 	callAgent.on('incomingCall', async event => {
 		console.debug("incomingCall", event);
@@ -67,6 +72,7 @@ async function setupACS(context) {
 		
 		calls[incomingCall.id] = {call: incomingCall};				
 		setTimeout(() => acceptCall(incomingCall.id), 2000);
+		logData("Incoming call with ID " + incomingCall.id + " received");		
 
 		incomingCall.on('callEnded', endedCall => {
 			console.debug("endedCall", endedCall.callEndReason.code);	
@@ -85,6 +91,7 @@ async function setupACS(context) {
 				
 			incomingCall.off('stateChanged', () => {});		
 			delete calls[incomingCall.id];
+			logData("Incoming call with ID " + incomingCall.id + " has ended");		
 		});			
 	});	
 
@@ -93,12 +100,14 @@ async function setupACS(context) {
 		
 		event.removed.forEach(removedCall => {	// happens before state change
 			console.debug("removedCall", removedCall.callEndReason, removedCall.callerInfo);	
-			delete calls[removedCall.id];			
+			delete calls[removedCall.id];	
+			logData("Call with ID " + removedCall.id + " has ended");				
 		})
 		
 		event.added.forEach(addedCall => {
 			console.debug("addedCall", addedCall, addedCall.callerInfo);
-			calls[addedCall.id] = {call: addedCall};			
+			calls[addedCall.id] = {call: addedCall};
+			logData("Call with ID " + addedCall.id + " is now active");	
 			
 			addedCall.on('remoteParticipantsUpdated', e => {
 				e.added.forEach(remoteParticipant => { 
@@ -120,6 +129,7 @@ async function setupACS(context) {
 				console.debug("addedCall state", addedCall.state, addedCall.lobby, addedCall._lastTsCallMeetingDetails?.joinUrl);
 				
 				postCallStatus(addedCall);	
+				logData("Call with ID " + addedCall.id + " is in state " + addedCall.state);					
 				
 				if (addedCall.state == "Connected")  {	
 
@@ -129,7 +139,8 @@ async function setupACS(context) {
 		
 	});
 	
-	setupEventSource();	
+	setupEventSource();
+	logData("Created Event source to CAS Server");
 }
 
 async function setupEventSource() {
@@ -170,6 +181,7 @@ async function setupEventSource() {
 	source.addEventListener('onAction', event => {
 		const request = JSON.parse(event.data);
 		console.debug("onAction", request);	
+		logData("Received request " + request.action + " from CAS Server");		
 
 		if (request.call_id) {
 			requests[request.call_id] = request;		
@@ -212,7 +224,9 @@ async function setupEventSource() {
 }
 
 async function postCallStatus(call, state)  {
-	console.debug("postCallStatus", call.tsCall?.threadId, call.id, state, call.state, requests[call.id]);	
+	console.debug("postCallStatus", call.tsCall?.threadId, call.id, state, call.state, requests[call.id]);
+	logData("Sending call state " +  (state ? state : call.state) + " to CAS Server");	
+			
 	const participants = [];
 	const request = requests[call.id];
 	
@@ -242,6 +256,8 @@ async function postCallStatus(call, state)  {
 
 async function makeCall(destination, request) { 
 	console.debug("makeCall", destination);
+	logData("Make Call  to " +  destination);	
+	
 	let call;
 	
 	if (destination.startsWith("+"))  {			
@@ -272,6 +288,7 @@ function unmuteCall(id) {
 }
 
 async function acceptCall(id) {
+	logData("Answer Call with ID " +  id);	
 	
 	if (calls[id]?.call) {
 		calls[id].call = await calls[id].call.accept({});
@@ -279,19 +296,23 @@ async function acceptCall(id) {
 }
 
 function rejectCall(id) {
+	logData("Reject Call with ID " +  id);		
 	if (calls[id]?.call) calls[id].call.reject({});
 }
 
 function holdCall(id) {
+	logData("Hold Call with ID " +  id);		
 	if (calls[id]?.call) calls[id].call.hold();
 }
 
-function resumeCall(id) {	
+function resumeCall(id) {
+	logData("Resume Call with ID " +  id);	
 	if (calls[id]?.call) calls[id].call.resume({});	
 }
 
 function hangupCall(id) {
 	console.debug("hangupCall", id);
+	logData("Hangup Call with ID " +  id);		
 	
 	if (!id || id == "all") {
 		const existingCalls = Object.getOwnPropertyNames(calls);
@@ -308,6 +329,8 @@ function hangupCall(id) {
 }
 
 async function readyForBusiness() {	
+	logData("Start Oversight ACS Diagnostics");	
+	
 	const user = await identityClient.createUser();
 	const userid = user.communicationUserId;				
 	const response2 = await identityClient.getToken({communicationUserId: user.communicationUserId}, ["chat", "voip"]);	
@@ -366,6 +389,8 @@ async function readyForBusiness() {
 	}	
 	*/
 	
+	logData("End Oversight ACS Diagnostics");		
+	
 	const payload = {
 		account: userId,
 		browser:  browserSupport.browser,
@@ -379,5 +404,10 @@ async function readyForBusiness() {
 	const url = origin + "/plugins/casapi/v1/companion/teststatus";		
 	const body = JSON.stringify(payload);
 	console.debug("readyForBusiness", url, payload);
-	const response = await fetch(url, {method: "POST", headers: {authorization}, body});		
+	const response = await fetch(url, {method: "POST", headers: {authorization}, body});
+	logData("Send Oversight ACS Diagnostics to CAS Server");	
+}
+
+function logData(data) {
+	testLog.innerHTML += data + "\n";
 }
