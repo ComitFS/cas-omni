@@ -1,4 +1,4 @@
-let userId, callAgent, calls, requests, origin, authorization;
+let userId, identityClient, callAgent, calls, requests, origin, authorization;
 
 window.addEventListener("unload", () => {
 	console.debug("unload");
@@ -42,11 +42,11 @@ async function setupACS(context) {
 	console.debug("setupACS", config, origin, userId, authorization);
 	
 	async function fetchTokenFromServerForUser() {			
-		const client = new ACS.CommunicationIdentityClient(config.acs_endpoint);			
+		identityClient = new ACS.CommunicationIdentityClient(config.acs_endpoint);			
 		const url2 = origin + "/plugins/casapi/v1/companion/msal/token";				
 		const resp = await fetch(url2, {method: "GET", headers: {authorization}});	
 		const json = await resp.json();	
-		const response2 = await client.getTokenForTeamsUser({teamsUserAadToken: json.access_token, clientId: config.client_id, userObjectId: userId});		
+		const response2 = await identityClient.getTokenForTeamsUser({teamsUserAadToken: json.access_token, clientId: config.client_id, userObjectId: userId});		
 		const token = response2.token;	
 		console.debug("fetchTokenFromServerForUser", token);
 		return token;
@@ -307,9 +307,9 @@ function hangupCall(id) {
 }
 
 async function readyForBusiness() {	
-	const user = await client.createUser();
+	const user = await identityClient.createUser();
 	const userid = user.communicationUserId;				
-	const response2 = await client.getToken({communicationUserId: user.communicationUserId}, ["chat", "voip"]);	
+	const response2 = await identityClient.getToken({communicationUserId: user.communicationUserId}, ["chat", "voip"]);	
 	const tokenCredential = new ACS.AzureCommunicationTokenCredential(response2.token);
 	const callClient = new ACS.CallClient();				
 	const preCallDiagnosticsResult = await callClient.feature(ACS.Features.PreCallDiagnostics).startTest(tokenCredential);
