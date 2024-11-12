@@ -39,7 +39,11 @@ async function setupACS(context) {
 	const authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));
 	const userId = context.userObjectId;
 	
-	console.debug("setupACS", origin, userId, authorization);
+	const url = origin + "/plugins/casapi/v1/companion/config/global";			
+	const response = await fetch(url, {method: "GET", headers: {authorization}});
+	config = await response.json();	
+	
+	console.debug("setupACS", config, origin, userId, authorization);
 	
 	async function fetchTokenFromServerForUser() {			
 		const client = new ACS.CommunicationIdentityClient(config.acs_endpoint);			
