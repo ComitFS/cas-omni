@@ -409,5 +409,5 @@ async function readyForBusiness() {
 }
 
 function logData(data) {
-	testLog.innerHTML += data + "\n";
+	testLog.innerHTML += data + "<br/>";
 }
