@@ -1,3 +1,5 @@
+let callAgent, calls;
+
 window.addEventListener("unload", () => {
 	console.debug("unload");
 });
@@ -60,6 +62,7 @@ async function setupACS(context) {
 	const callClient = new ACS.CallClient();
 	const tokenCredential = new ACS.AzureCommunicationTokenCredential({tokenRefresher: async () => fetchTokenFromServerForUser(), token, refreshProactively: true});					
 	
+	calls = [];	
 	callAgent = await callClient.createTeamsCallAgent(tokenCredential);	
 
 	callAgent.on('incomingCall', async event => {
@@ -70,11 +73,13 @@ async function setupACS(context) {
 		console.debug("callsUpdated", event); 	
 		
 		event.removed.forEach(removedCall => {	// happens before state change
-			console.debug("removedCall", removedCall.callEndReason, removedCall.callerInfo);				
+			console.debug("removedCall", removedCall.callEndReason, removedCall.callerInfo);	
+			delete calls[removedCall.id];			
 		})
 		
 		event.added.forEach(addedCall => {
 			console.debug("addedCall", addedCall, addedCall.callerInfo);
+			calls[addedCall.id] = {call: addedCall};			
 			
 			addedCall.on('remoteParticipantsUpdated', e => {
 				e.added.forEach(remoteParticipant => { 
@@ -145,7 +150,7 @@ async function setupEventSource(origin, casToken, userId, teamsToken) {
 		console.debug("onAction", request);			
 		
 		if (request.action == "makeCall") 	{	
-				
+			makeCall(request.destination);	
 		}
 		else
 			
@@ -155,7 +160,55 @@ async function setupEventSource(origin, casToken, userId, teamsToken) {
 		else
 			
 		if (request.action == "requestAction") {	
-					
+			const call = calls[request.call_id]?.call;
+			
+			if (call) {	
+				if (request.request_action == "AnswerCall") 		acceptCall(call.id);
+				if (request.request_action == "RejectCall") 		rejectCall(call.id);			
+				if (request.request_action == "ClearConnection") 	hangupCall(call.id);			
+				if (request.request_action == "HoldCall") 			holdCall(call.id);
+				if (request.request_action == "RetrieveCall") 		resumeCall(call.id);
+				if (request.request_action == "TransferCall") 		transferCall(call.id, request.destination);			
+				if (request.request_action == "AddThirdParty") 		addThirdParty(call.id, request.destination);						
+				if (request.request_action == "RemoveThirdParty") 	removeThirdParty(call.id, request.destination);						
+				if (request.request_action == "StartScreenShare") 	startScreenShare(call.id);	
+				if (request.request_action == "StopScreenShare") 	stopScreenShare(call.id);							
+			} else {
+				console.error("call not found", request.call_id, calls);
+			}				
 		}		
 	});			
+}
+
+async function makeCall(destination) { 
+	console.debug("makeCall", destination);
+
+	if (destination.startsWith("+"))  {			
+		call = await callAgent.startCall([{phoneNumber: destination.replaceAll(" ", "")}]);	  			
+	} 
+	else
+		
+	if (destination.startsWith("8:acs")) {
+		call = await callAgent.startCall([{communicationUserId: destination }], {});					
+	} 	
+	else {
+		call = await callAgent.startCall([{ microsoftTeamsUserId: destination }],	{});
+	}
+}
+
+function hangupCall(id) {
+	console.debug("hangupCall", id);
+	
+	if (!id || id == "all") {
+		const existingCalls = Object.getOwnPropertyNames(calls);
+
+		for (let i in existingCalls) {	
+			const call = calls[existingCalls[i]].call;
+			if (call) call.hangUp();
+		}
+	} else {	
+		if (calls[id]?.call) {
+			calls[id].call.hangUp();							
+		}
+	}
 }
