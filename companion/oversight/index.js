@@ -378,5 +378,5 @@ async function readyForBusiness() {
 	const url = origin + "/plugins/casapi/v1/companion/teststatus";		
 	const body = JSON.stringify(payload);
 	console.debug("readyForBusiness", url, payload);
-	const response = await fetch(url, {method: "POST", , headers: {authorization}, body});		
+	const response = await fetch(url, {method: "POST", headers: {authorization}, body});		
 }
