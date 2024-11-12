@@ -1,4 +1,4 @@
-let userId, callClient, tokenCredential, callAgent, calls, requests, origin, authorization;
+let userId, callAgent, calls, requests, origin, authorization;
 
 window.addEventListener("unload", () => {
 	console.debug("unload");
@@ -53,8 +53,8 @@ async function setupACS(context) {
 	}		
 
 	const token = await fetchTokenFromServerForUser();
-	callClient = new ACS.CallClient();
-	tokenCredential = new ACS.AzureCommunicationTokenCredential({tokenRefresher: async () => fetchTokenFromServerForUser(), token, refreshProactively: true});					
+	const callClient = new ACS.CallClient();
+	const tokenCredential = new ACS.AzureCommunicationTokenCredential({tokenRefresher: async () => fetchTokenFromServerForUser(), token, refreshProactively: true});					
 	
 	requests = [];
 	calls = [];	
@@ -306,7 +306,12 @@ function hangupCall(id) {
 	}
 }
 
-async function readyForBusiness() {					
+async function readyForBusiness() {	
+	const user = await client.createUser();
+	const userid = user.communicationUserId;				
+	const response2 = await client.getToken({communicationUserId: user.communicationUserId}, ["chat", "voip"]);	
+	const tokenCredential = new ACS.AzureCommunicationTokenCredential(response2.token);
+	const callClient = new ACS.CallClient();				
 	const preCallDiagnosticsResult = await callClient.feature(ACS.Features.PreCallDiagnostics).startTest(tokenCredential);
 	
 	console.debug("readyForBusiness", preCallDiagnosticsResult);	
