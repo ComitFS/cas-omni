@@ -34,7 +34,7 @@ window.addEventListener("unload", function() {
 	console.debug("window.unload", window.location.hostname);	
 });
 
-function setupACS(context) {
+async function setupACS(context) {
 	const origin = JSON.parse(localStorage.getItem("configuration.cas_server_url"));
 	const authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));
 	const userId = context.userObjectId;
@@ -96,4 +96,62 @@ function setupACS(context) {
 		});			
 		
 	});
+	
+	setupEventSource(origin, authorization, userId, token);	
+}
+
+
+async function setupEventSource(origin, casToken, userId, teamsToken) {
+	const url = origin + "/plugins/casapi/sse?uid=" + userId + "&token=" + casToken;
+	console.debug("setupEventSource", url);
+
+	const source = new EventSource(url);
+	
+	source.onerror = event => {
+		console.debug("onError", event);					
+	};
+
+	source.addEventListener('onSMSNotify', async event => {
+		const data = JSON.parse(event.data);
+		console.debug("onSMSNotify", data);
+	});
+	
+	source.addEventListener('onMessage', async event => {
+		const msg = JSON.parse(event.data);
+		console.debug("onMessage", msg);
+	});
+	
+	source.addEventListener('onCallListStatus', async event => {
+		const data = JSON.parse(event.data);
+		console.debug("onCallListStatus", data);		
+	});
+	
+	source.addEventListener('onConnect', async event => {
+		const profile = JSON.parse(event.data);	
+		console.debug("onConnect", profile);		
+	});
+	
+	source.addEventListener('onSignIn', async event => {
+		const json = JSON.parse(event.data);	
+		console.debug("onSignIn", json);		
+	});
+		
+	source.addEventListener('onAction', event => {
+		const request = JSON.parse(event.data);
+		console.debug("onAction", request);			
+		
+		if (request.action == "makeCall") 	{	
+				
+		}
+		else
+			
+		if (request.action == "intercomCall") 	{						
+		
+		}
+		else
+			
+		if (request.action == "requestAction") {	
+					
+		}		
+	});			
 }
