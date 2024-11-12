@@ -22,8 +22,10 @@ window.addEventListener("load", async () =>  {
 
 		microsoftTeams.getContext(async context => {
 			microsoftTeams.appInitialization.notifySuccess();
-			console.log("cas companion logged in user", context, context.subEntityId, context.userObjectId);	
+			console.log("cas companion logged in user", context, context.subEntityId, context.userObjectId);
+			logData("Prepare for Oversight testing");			
 			setupACS(context);
+			logData("Ready for Oversight testing");
 		});
 
 		microsoftTeams.registerOnThemeChangeHandler(function (theme) {
@@ -140,7 +142,7 @@ async function setupACS(context) {
 	});
 	
 	setupEventSource();
-	logData("Created Event source to CAS Server");
+	logData("Created Event source connection to CAS Server");
 }
 
 async function setupEventSource() {
