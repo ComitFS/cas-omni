@@ -1,4 +1,4 @@
-let callAgent, calls, requests, origin, authorization;
+let userId, callAgent, calls, requests, origin, authorization;
 
 window.addEventListener("unload", () => {
 	console.debug("unload");
@@ -33,7 +33,7 @@ window.addEventListener("load", async () =>  {
 });	
 
 async function setupACS(context) {
-	const userId = context.userObjectId;
+	userId = context.userObjectId;
 	
 	const url = origin + "/plugins/casapi/v1/companion/config/global";			
 	const response = await fetch(url, {method: "GET", headers: {authorization}});
@@ -127,10 +127,10 @@ async function setupACS(context) {
 		
 	});
 	
-	setupEventSource(userId);	
+	setupEventSource();	
 }
 
-async function setupEventSource(userId) {
+async function setupEventSource() {
 	const url = origin + "/plugins/casapi/sse?uid=" + userId + "&token=" + authorization;
 	console.debug("setupEventSource", url);
 
@@ -169,10 +169,12 @@ async function setupEventSource(userId) {
 		const request = JSON.parse(event.data);
 		console.debug("onAction", request);	
 
-		requests[request.call_id] = request;		
+		if (request.call_id) {
+			requests[request.call_id] = request;		
+		}
 		
 		if (request.action == "makeCall") 	{	
-			makeCall(request.destination);	
+			makeCall(request.destination, request);	
 		}
 		else
 			
@@ -215,7 +217,7 @@ async function postCallStatus(call, state)  {
 	const data = {
 		id: call.id,
 		interest: requests[call.id]?.interest,
-		account: config.id,		
+		account: userId,		
 		direction: call.direction ? call.direction : "Incoming",
 		state: state ? state : call.state,
 		callerInfo: call.callerInfo,
@@ -227,19 +229,14 @@ async function postCallStatus(call, state)  {
 	
 	if (data.callerInfo?.displayName == "Rooney") data.callerInfo.displayName = "JJ Gartland";
 
-	if (config.client_id && config.client_id != "") {
-		data.id = call.id;
-		const url = origin + "/plugins/casapi/v1/companion/callstatus";		
-		const response = await fetch(url, {method: "POST", headers: {authorization}, body: JSON.stringify(data)});				
-	} else {
-		data.id = calls[call.id]?.serverCallId;		
-		await sendControlMessage("post_callstatus", data)				
-	}
+	const url = origin + "/plugins/casapi/v1/companion/callstatus";		
+	const response = await fetch(url, {method: "POST", headers: {authorization}, body: JSON.stringify(data)});								
 }
 
-async function makeCall(destination) { 
+async function makeCall(destination, request) { 
 	console.debug("makeCall", destination);
-
+	let call;
+	
 	if (destination.startsWith("+"))  {			
 		call = await callAgent.startCall([{phoneNumber: destination.replaceAll(" ", "")}]);	  			
 	} 
@@ -251,6 +248,12 @@ async function makeCall(destination) {
 	else {
 		call = await callAgent.startCall([{ microsoftTeamsUserId: destination }],	{});
 	}
+	
+	if (call) {
+		if (!calls[call.id]) calls[call.id] = {};
+		calls[call.id].call = call;	
+		requests[call.id] = request;		
+	}	
 }
 
 function muteCall(id) {	
