@@ -39,14 +39,14 @@ async function setupACS(context) {
 	const authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));
 	const userId = context.userObjectId;
 	
-	console.debug("setupACS", origin, userid, authorization);
+	console.debug("setupACS", origin, userId, authorization);
 	
 	async function fetchTokenFromServerForUser() {			
 		const client = new ACS.CommunicationIdentityClient(config.acs_endpoint);			
 		const url2 = origin + "/plugins/casapi/v1/companion/msal/token";				
 		const resp = await fetch(url2, {method: "GET", headers: {authorization}});	
 		const json = await resp.json();	
-		const response2 = await client.getTokenForTeamsUser({teamsUserAadToken: json.access_token, clientId: config.client_id, userObjectId: userid});		
+		const response2 = await client.getTokenForTeamsUser({teamsUserAadToken: json.access_token, clientId: config.client_id, userObjectId: userId});		
 		const token = response2.token;	
 		console.debug("fetchTokenFromServerForUser", token);
 		return token;
