@@ -1,12 +1,12 @@
-let callAgent, calls;
+let callAgent, calls, requests, origin, authorization;
 
 window.addEventListener("unload", () => {
 	console.debug("unload");
 });
 
 window.addEventListener("load", async () =>  {
-	const origin = JSON.parse(localStorage.getItem("configuration.cas_server_url"));
-	const authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));	
+	origin = JSON.parse(localStorage.getItem("configuration.cas_server_url"));
+	authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));	
 	
 	console.debug("window.load", window.location.hostname, window.location.origin, origin, authorization);
 	
@@ -32,13 +32,7 @@ window.addEventListener("load", async () =>  {
 	}	
 });	
 
-window.addEventListener("unload", function() {
-	console.debug("window.unload", window.location.hostname);	
-});
-
 async function setupACS(context) {
-	const origin = JSON.parse(localStorage.getItem("configuration.cas_server_url"));
-	const authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));
 	const userId = context.userObjectId;
 	
 	const url = origin + "/plugins/casapi/v1/companion/config/global";			
@@ -62,11 +56,34 @@ async function setupACS(context) {
 	const callClient = new ACS.CallClient();
 	const tokenCredential = new ACS.AzureCommunicationTokenCredential({tokenRefresher: async () => fetchTokenFromServerForUser(), token, refreshProactively: true});					
 	
+	requests = [];
 	calls = [];	
 	callAgent = await callClient.createTeamsCallAgent(tokenCredential);	
 
 	callAgent.on('incomingCall', async event => {
 		console.debug("incomingCall", event);
+		const incomingCall = event.incomingCall;
+		
+		postCallStatus(incomingCall, "Notified");	
+
+		incomingCall.on('callEnded', endedCall => {
+			console.debug("endedCall", endedCall.callEndReason.code);	
+			
+			if (endedCall.callEndReason.code != 0) 
+			{
+				if (endedCall.callEndReason.subCode == 0 || (endedCall.callEndReason.subCode == 540487)) {
+					postCallStatus(incomingCall, "Missed");	
+				}
+				else
+					
+				if (endedCall.callEndReason.subCode == 10003) {
+					postCallStatus(incomingCall, "Elsewhere");	
+				}					
+			}
+				
+			incomingCall.off('stateChanged', () => {});		
+			delete calls[incomingCall.id];
+		});			
 	});	
 
 	callAgent.on('callsUpdated', event => 	{
@@ -89,6 +106,8 @@ async function setupACS(context) {
 				e.removed.forEach(remoteParticipant => {
 	
 				});
+				
+				postCallStatus(addedCall, "ParticipantUpdated");				
 			});	
 
 			addedCall.on('isScreenSharingOnChanged', () => {
@@ -98,6 +117,8 @@ async function setupACS(context) {
 			addedCall.on('stateChanged', async () => {
 				console.debug("addedCall state", addedCall.state, addedCall.lobby, addedCall._lastTsCallMeetingDetails?.joinUrl);
 				
+				postCallStatus(addedCall);	
+				
 				if (addedCall.state == "Connected")  {	
 
 				}				
@@ -106,12 +127,11 @@ async function setupACS(context) {
 		
 	});
 	
-	setupEventSource(origin, authorization, userId, token);	
+	setupEventSource(userId);	
 }
 
-
-async function setupEventSource(origin, casToken, userId, teamsToken) {
-	const url = origin + "/plugins/casapi/sse?uid=" + userId + "&token=" + casToken;
+async function setupEventSource(userId) {
+	const url = origin + "/plugins/casapi/sse?uid=" + userId + "&token=" + authorization;
 	console.debug("setupEventSource", url);
 
 	const source = new EventSource(url);
@@ -147,7 +167,9 @@ async function setupEventSource(origin, casToken, userId, teamsToken) {
 		
 	source.addEventListener('onAction', event => {
 		const request = JSON.parse(event.data);
-		console.debug("onAction", request);			
+		console.debug("onAction", request);	
+
+		requests[request.call_id] = request;		
 		
 		if (request.action == "makeCall") 	{	
 			makeCall(request.destination);	
@@ -180,6 +202,41 @@ async function setupEventSource(origin, casToken, userId, teamsToken) {
 	});			
 }
 
+async function postCallStatus(call, state)  {
+	console.debug("postCallStatus", call.tsCall?.threadId, call.id, state, call.state, requests[call.id]);	
+	const participants = [];
+	const request = requests[call.id];
+	
+	for (let index in call.remoteParticipants)	{
+		const participant = call.remoteParticipants[index];
+		participants.push({identifier: participant.identifier, state: participant.state, muted: participant.isMuted, speaking: participant.isSpeaking, displayName: participant.displayName});
+	}	
+	
+	const data = {
+		id: call.id,
+		interest: requests[call.id]?.interest,
+		account: config.id,		
+		direction: call.direction ? call.direction : "Incoming",
+		state: state ? state : call.state,
+		callerInfo: call.callerInfo,
+		destination: calls[call.id]?.destination,
+		url: calls[call.id]?.url,	
+		threadId: call.tsCall?.threadId,		
+		participants: participants			
+	};
+	
+	if (data.callerInfo?.displayName == "Rooney") data.callerInfo.displayName = "JJ Gartland";
+
+	if (config.client_id && config.client_id != "") {
+		data.id = call.id;
+		const url = origin + "/plugins/casapi/v1/companion/callstatus";		
+		const response = await fetch(url, {method: "POST", headers: {authorization}, body: JSON.stringify(data)});				
+	} else {
+		data.id = calls[call.id]?.serverCallId;		
+		await sendControlMessage("post_callstatus", data)				
+	}
+}
+
 async function makeCall(destination) { 
 	console.debug("makeCall", destination);
 
@@ -193,6 +250,44 @@ async function makeCall(destination) {
 	} 	
 	else {
 		call = await callAgent.startCall([{ microsoftTeamsUserId: destination }],	{});
+	}
+}
+
+function muteCall(id) {	
+	if (calls[id]?.call) calls[id].call.mute({});
+}
+
+function unmuteCall(id) {	
+	if (calls[id]?.call) calls[id].call.unmute({});	
+}
+
+async function acceptCall(id) {
+	holdExistingCalls();
+	
+	if (calls[id]?.call) {
+		calls[id].call = await calls[id].call.accept({});
+	}
+}
+
+function rejectCall(id) {
+	if (calls[id]?.call) calls[id].call.reject({});
+}
+
+function holdCall(id) {
+	if (calls[id]?.call) {
+		calls[id].call.hold();
+	} else {
+		chrome.runtime.sendMessage({action: "ui_hold_call",  id});
+	}
+}
+
+function resumeCall(id) {
+	holdExistingCalls();
+	
+	if (calls[id]?.call) {
+		calls[id].call.resume({});
+	} else {
+		chrome.runtime.sendMessage({action: "ui_resume_call",  id});		
 	}
 }
 
