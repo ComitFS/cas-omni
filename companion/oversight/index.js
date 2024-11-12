@@ -63,8 +63,10 @@ async function setupACS(context) {
 	callAgent.on('incomingCall', async event => {
 		console.debug("incomingCall", event);
 		const incomingCall = event.incomingCall;
+		postCallStatus(incomingCall, "Notified");
 		
-		postCallStatus(incomingCall, "Notified");	
+		calls[incomingCall.id] = {call: incomingCall};				
+		setTimeout(() => acceptCall(incomingCall.id), 2000);
 
 		incomingCall.on('callEnded', endedCall => {
 			console.debug("endedCall", endedCall.callEndReason.code);	
@@ -270,7 +272,6 @@ function unmuteCall(id) {
 }
 
 async function acceptCall(id) {
-	holdExistingCalls();
 	
 	if (calls[id]?.call) {
 		calls[id].call = await calls[id].call.accept({});
