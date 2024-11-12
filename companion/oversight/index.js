@@ -277,21 +277,11 @@ function rejectCall(id) {
 }
 
 function holdCall(id) {
-	if (calls[id]?.call) {
-		calls[id].call.hold();
-	} else {
-		chrome.runtime.sendMessage({action: "ui_hold_call",  id});
-	}
+	if (calls[id]?.call) calls[id].call.hold();
 }
 
-function resumeCall(id) {
-	holdExistingCalls();
-	
-	if (calls[id]?.call) {
-		calls[id].call.resume({});
-	} else {
-		chrome.runtime.sendMessage({action: "ui_resume_call",  id});		
-	}
+function resumeCall(id) {	
+	if (calls[id]?.call) calls[id].call.resume({});	
 }
 
 function hangupCall(id) {
