@@ -23,6 +23,10 @@ window.addEventListener("load", async () =>  {
 		microsoftTeams.getContext(async context => {
 			microsoftTeams.appInitialization.notifySuccess();
 			console.log("cas companion logged in user", context, context.subEntityId, context.userObjectId);
+			
+			testLog = document.getElementById("test-log");
+			testLog.innerHTML = "";	
+	
 			logData("Prepare for Oversight testing");			
 			setupACS(context);
 			logData("Ready for Oversight testing");
@@ -42,8 +46,6 @@ async function setupACS(context) {
 	config = await response.json();	
 	
 	console.debug("setupACS", config, origin, userId, authorization);
-	testLog = document.getElementById("test-log");
-	testLog.innerHTML = "";	
 	
 	async function fetchTokenFromServerForUser() {			
 		identityClient = new ACS.CommunicationIdentityClient(config.acs_endpoint);			
