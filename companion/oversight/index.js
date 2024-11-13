@@ -5,16 +5,16 @@ window.addEventListener("unload", () => {
 });
 
 window.addEventListener("load", async () =>  {
-	origin = JSON.parse(localStorage.getItem("configuration.cas_server_url"));
-	authorization = JSON.parse(localStorage.getItem("configuration.cas_server_token"));	
-	
-	console.debug("window.load", window.location.hostname, window.location.origin, origin, authorization);
+	console.debug("window.load", window.location.hostname, window.location.origin);
 	
 	const urlParam = (name) => {
 		var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
 		if (!results) { return undefined; }
 		return unescape(results[1] || undefined);
 	}; 	
+			
+	testLog = document.getElementById("test-log");
+	testLog.innerHTML = "";		
 	
 	if (!!microsoftTeams) {
 		microsoftTeams.initialize();
@@ -22,14 +22,15 @@ window.addEventListener("load", async () =>  {
 
 		microsoftTeams.getContext(async context => {
 			microsoftTeams.appInitialization.notifySuccess();
-			console.log("cas companion logged in user", context, context.subEntityId, context.userObjectId);
-			
-			testLog = document.getElementById("test-log");
-			testLog.innerHTML = "";	
+
+			userId = context.userObjectId;			
+			origin = context.subEntityId.cas_server_url;
+			authorization = context.subEntityId.cas_server_token;	
+			console.log("cas companion logged in user", context, userId, origin, authorization);			
 	
-			logData("Prepare for Oversight testing");			
-			setupACS(context);
-			logData("Ready for Oversight testing");
+			if (origin && authorization && userId) {
+				setupACS(context);
+			}
 		});
 
 		microsoftTeams.registerOnThemeChangeHandler(function (theme) {
@@ -39,8 +40,6 @@ window.addEventListener("load", async () =>  {
 });	
 
 async function setupACS(context) {
-	userId = context.userObjectId;
-	
 	const url = origin + "/plugins/casapi/v1/companion/config/global";			
 	const response = await fetch(url, {method: "GET", headers: {authorization}});
 	config = await response.json();	
@@ -56,8 +55,9 @@ async function setupACS(context) {
 		const token = response2.token;	
 		console.debug("fetchTokenFromServerForUser", token);
 		return token;
-	}		
+	}	
 
+	logData("Prepare for Oversight testing");		
 	const token = await fetchTokenFromServerForUser();
 	logData("Fetched access token from CAS Server");
 	
@@ -174,7 +174,8 @@ async function setupEventSource() {
 	
 	source.addEventListener('onConnect', async event => {
 		const profile = JSON.parse(event.data);	
-		console.debug("onConnect", profile);		
+		console.debug("onConnect", profile);	
+		logData("Ready for Oversight testing");		
 	});
 	
 	source.addEventListener('onSignIn', async event => {
