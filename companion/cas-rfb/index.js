@@ -57,7 +57,7 @@ async function setupACS(context) {
 		return token;
 	}	
 
-	logData("Prepare for Oversight testing");		
+	logData("Ready For Business Testing preparing...");		
 	const token = await fetchTokenFromServerForUser();
 	logData("Fetched access token from CAS Server");
 	
@@ -175,7 +175,7 @@ async function setupEventSource() {
 	source.addEventListener('onConnect', async event => {
 		const profile = JSON.parse(event.data);	
 		console.debug("onConnect", profile);	
-		logData("Ready for Oversight testing");		
+		logData("Ready For Business Testing waiting..");		
 	});
 	
 	source.addEventListener('onSignIn', async event => {
@@ -334,7 +334,7 @@ function hangupCall(id) {
 }
 
 async function readyForBusiness() {	
-	logData("Start Oversight ACS Diagnostics");	
+	logData("Start Ready For Business ACS Diagnostics");	
 	
 	const user = await identityClient.createUser();
 	const userid = user.communicationUserId;				
@@ -394,7 +394,7 @@ async function readyForBusiness() {
 	}	
 	*/
 	
-	logData("End Oversight ACS Diagnostics");		
+	logData("End Ready For Business ACS Diagnostics");		
 	
 	const payload = {
 		account: userId,
@@ -410,7 +410,7 @@ async function readyForBusiness() {
 	const body = JSON.stringify(payload);
 	console.debug("readyForBusiness", url, payload);
 	const response = await fetch(url, {method: "POST", headers: {authorization}, body});
-	logData("Send Oversight ACS Diagnostics to CAS Server");	
+	logData("Send Ready For Business ACS Diagnostics to CAS Server");	
 }
 
 function logData(data) {
