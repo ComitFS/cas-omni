@@ -85,16 +85,29 @@ async function setupACS(context) {
 			{
 				if (endedCall.callEndReason.subCode == 0 || (endedCall.callEndReason.subCode == 540487)) {
 					postCallStatus(incomingCall, "Missed");	
+					delete calls[incomingCall.id];
 				}
 				else
 					
-				if (endedCall.callEndReason.subCode == 10003) {
-					postCallStatus(incomingCall, "Elsewhere");	
+				if (endedCall.callEndReason.subCode == 10003) 
+				{
+					incomingCall.info.getServerCallId().then(result => {
+						console.debug("incomingCall server call id", result, incomingCall.id);	
+						calls[incomingCall.id].serverCallId = result;				
+						postCallStatus(incomingCall, "Elsewhere");		
+						delete calls[incomingCall.id];						
+						
+					}).catch(err => {
+						console.error(err);		
+						postCallStatus(incomingCall, "Elsewhere");
+						delete calls[incomingCall.id];						
+					});
 				}					
+			} else {
+				delete calls[incomingCall.id];				
 			}
 				
 			incomingCall.off('stateChanged', () => {});		
-			delete calls[incomingCall.id];
 			logData("Incoming call with ID " + incomingCall.id + " has ended");		
 		});			
 	});	
@@ -135,8 +148,24 @@ async function setupACS(context) {
 				postCallStatus(addedCall);	
 				logData("Call with ID " + addedCall.id + " is in state " + addedCall.state);					
 				
-				if (addedCall.state == "Connected")  {	
-
+				if (addedCall.state == "Connected")  
+				{	
+					addedCall.info.getServerCallId().then(result => {
+						console.debug("addedCall server call id", result, addedCall.id);
+						calls[addedCall.id].serverCallId = result;
+						postCallStatus(addedCall);							
+						
+					}).catch(err => {
+						console.error(err);
+						postCallStatus(addedCall);							
+					});
+				}
+				else 					
+					
+				if (addedCall.state == "Disconnected") 	{					
+					addedCall.off('stateChanged', () => {});					
+					if (calls[addedCall.id]?.serverCallId) delete calls[calls[addedCall.id].serverCallId];	
+					delete calls[addedCall.id];					
 				}				
 			});				
 		});			
@@ -250,7 +279,8 @@ async function postCallStatus(call, state)  {
 		destination: calls[call.id]?.destination,
 		url: calls[call.id]?.url,	
 		threadId: call.tsCall?.threadId,		
-		participants: participants			
+		participants: participants,
+		serverCallId: calls[call.id]?.serverCallId		
 	};
 	
 	if (data.callerInfo?.displayName == "Rooney") data.callerInfo.displayName = "JJ Gartland";
