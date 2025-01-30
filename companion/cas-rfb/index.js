@@ -436,7 +436,7 @@ async function readyForBusiness() {
 		connected: inCallDiagnostics.connected,
 		bandwidth: inCallDiagnostics.bandWidth		
 	};	
-	const url = origin + "/plugins/casapi/v1/companion/teststatus";		
+	const url = origin + "/plugins/casapi/v1/companion/rfb/teststatus";		
 	const body = JSON.stringify(payload);
 	console.debug("readyForBusiness", url, payload);
 	const response = await fetch(url, {method: "POST", headers: {authorization}, body});
